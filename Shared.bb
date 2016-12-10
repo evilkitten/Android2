@@ -12,7 +12,14 @@ Const MAPSIZEY=64
 
 Const MAP_EXTENSION$=".a2m"
 
-Const MAP_MAZEOFDEATH$="Maze Of Death"
+Const MAP_MAZEOFDEATH$="Flatlands";"Maze Of Death"
+
+;SHARED MILLITOID DETAILS
+Const MILLITOID_MAX=5
+Const MILLITOID_SEGMENTS_MAX=4		;Actual Segments - 1 (Does not include HEAD)
+
+Global CAPSULEX
+Global CAPSULEY
 
 Global MAP_BANK
 
@@ -34,6 +41,40 @@ End Function
 
 Function GetArrayOffset(X,Y)
 	Return X + (Y * MAPSIZEX)
-End Function	
+End Function
+
+;MAP BLOCKED
+
+Function IsBlockedUp(X,Y)
+	Local YY=Y-1
+	If (YY<0) Then YY=MAPSIZEY+YY
+	Return (GetBlocked(PeekArrayValue(X,YY))) 
+End Function
+
+Function IsBlockedDown(X,Y)
+	Local YY=((Y+1) Mod MAPSIZEY)
+	Return (GetBlocked(PeekArrayValue(X,YY)))
+End Function
+
+Function IsBlockedLeft(X,Y)
+	Local XX=X-1
+	If (XX<0) Then XX=MAPSIZEX+XX
+	Return (GetBlocked(PeekArrayValue(XX,Y)))
+End Function
+
+Function IsBlockedRight(X,Y)
+	Local XX=((X+1) Mod MAPSIZEX)
+	Return (GetBlocked(PeekArrayValue(XX,Y)))
+End Function
+
+Function GetBlocked(MapType)
+	Select MapType
+		Case MAP_WALL,MAP_TREE,MAP_BOUNCER,MAP_HOVERDROID,MAP_MILLITOID,MAP_CAPSULE:
+			Return True
+		Default:
+			Return False
+	End Select
+End Function
 ;~IDEal Editor Parameters:
+;~F#19#1F#24#29#2F#35#3A#40#45
 ;~C#Blitz3D

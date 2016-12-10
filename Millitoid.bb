@@ -1,6 +1,10 @@
-Const MILLITOID_SEGMENTS_MAX=4
+;Const MILLITOID_SEGMENTS_MAX=4 - SHARED with MAP Editor
+
+Const MILLITOID_HEAD_FILE$="Millitoid_Head"
+Const MILLITOID_SEGMENT_FILE$="Millitoid_Segment"
 
 Type MILLITOID
+	Field MillitoidNumber
 	Field Entity
 	Field Segment[MILLITOID_SEGMENTS_MAX];(Handle(MILLITOIDSEGMENT))
 	Field Segments
@@ -22,6 +26,22 @@ Global MILLITOID_SEGMENT_Y_OFFSET#
 
 Global MILLITOID_REMAINING
 
+Function MillitoidHeadAnimFile$()
+	Return AnimFile(MILLITOID_HEAD_FILE)
+End Function
+
+Function MillitoidSegmentAnimFile$()
+	Return AnimFile(MILLITOID_SEGMENT_FILE)
+End Function
+
+Function MillitoidHeadMatFile$()
+	Return MatFile(MILLITOID_HEAD_FILE)
+End Function
+
+Function MillitoidSegmentMatFile$()
+	Return MatFile(MILLITOID_SEGMENT_FILE)
+End Function
+
 Function BuildMillitoidHeadMaster()
 	If (MILLITOID_HEAD_MASTER)
 		FreeEntity MILLITOID_HEAD_MASTER
@@ -31,17 +51,21 @@ Function BuildMillitoidHeadMaster()
 	If SPECTRUM_MODE 
 		MILLITOID_HEAD_MASTER=CreateSphere(POLYGON_DENSITY)
 	Else
-		MILLITOID_HEAD_MASTER=LoadAnimMesh(VisualDir()+"Millitoid_Head.3ds")
+		MILLITOID_HEAD_MASTER=LoadAnimMesh(MillitoidHeadAnimFile())
 	End If
 	
 	InitialiseMillitoidHeadAnimSequences
 	PaintMillitoidHead
 	SetMillitoidHeadPhysics
 	ScaleEntity MILLITOID_HEAD_MASTER,0.75-(0.35*SPECTRUM_MODE),0.25+(0.15*SPECTRUM_MODE),0.5,True
+	
+	HideEntity MILLITOID_HEAD_MASTER
+	PositionEntity MILLITOID_HEAD_MASTER,0,-100,0
+	
 End Function
 
 Function PaintMillitoidHead()
-		Local Texture=LoadTexture(VisualDir()+"Millitoid_Head_Mat.png")
+	Local Texture=LoadTexture(MillitoidHeadMatFile())
 		PaintChildren(MILLITOID_HEAD_MASTER,Texture,255,0,0)
 		FreeTexture Texture
 		EntityShininess MILLITOID_HEAD_MASTER,0.25+(SPECTRUM_MODE*0.75)
@@ -62,19 +86,21 @@ Function BuildMillitoidSegmentMaster()
 	If SPECTRUM_MODE 
 		MILLITOID_SEGMENT_MASTER=CreateCube()
 	Else
-		MILLITOID_SEGMENT_MASTER=LoadAnimMesh(VisualDir()+"Millitoid_Segment.3ds")
+		MILLITOID_SEGMENT_MASTER=LoadAnimMesh(MillitoidSegmentAnimFile())
 	End If
 	
 	InitialiseMillitoidSegmentAnimSequences
 	
 	PaintMillitoidSegment
 	SetMillitoidSegmentPhysics
-	
 	ScaleEntity MILLITOID_SEGMENT_MASTER,0.333,0.25+(0.25*SPECTRUM_MODE),0.6,True
+	
+	HideEntity MILLITOID_SEGMENT_MASTER
+	PositionEntity MILLITOID_SEGMENT_MASTER,0,-100,0
 End Function
 
 Function PaintMillitoidSegment()
-	Local Texture=LoadTexture(VisualDir()+"Millitoid_Segment_Mat.png")
+	Local Texture=LoadTexture(MillitoidSegmentMatFile())
 	PaintChildren(MILLITOID_SEGMENT_MASTER,Texture,0,0,255)
 	FreeTexture Texture
 	
@@ -96,11 +122,11 @@ Function SetMillitoidAnimation(M.MILLITOID)
 End Function
 
 Function InitialiseMillitoidHeadAnimSequences()
-	LoadAnimSeq(MILLITOID_HEAD_MASTER,VisualDir()+"Millitoid_Head_Anim.3ds")
+	LoadAnimSeq(MILLITOID_HEAD_MASTER,MillitoidHeadAnimFile$())
 End Function
 
 Function InitialiseMillitoidSegmentAnimSequences()
-	LoadAnimSeq(MILLITOID_SEGMENT_MASTER,VisualDir()+"Millitoid_Segment_Anim.3ds")
+	LoadAnimSeq(MILLITOID_SEGMENT_MASTER,MillitoidSegmentAnimFile())
 End Function
 
 Function SetMillitoidHeadAnimation(Entity)
@@ -124,18 +150,27 @@ Function MoveMillitoid(M.MILLITOID)
 		Return
 	End If
 	
-	If (EntityPick(M\Entity,1.0))
-		TurnEntity M\Entity,0,Rand(-1,1)*90,0,True
+	Local Picked=EntityPick(M\Entity,1.0)
+	
+	If (Picked)
+		Local Rotate=Rnd(0,1)
+		Rotate=((-1*(Not(Rotate)))+(1*Rotate))
+		TurnEntity M\Entity,0,Rotate*90,0,True
 	Else
 		MoveEntity M\Entity,0,0,0.1*TICK
-		
-		Local Iter
-		For Iter=1 To M\Segments
-			Local Shandle=M\Segment[Iter-1]
-			Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(Shandle)
-			MoveSegment(S)
-		Next
+		SegmentsFollow(M)
+		Return
 	End If
+	
+End Function
+
+Function SegmentsFollow(M.MILLITOID)
+	Local Iter
+	For Iter=1 To M\Segments
+		Local Shandle=M\Segment[Iter-1]
+		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(Shandle)
+		MoveSegment(S)
+	Next
 End Function
 
 Function WrapAroundSegments(M.MILLITOID,RelativeX)
@@ -143,8 +178,8 @@ Function WrapAroundSegments(M.MILLITOID,RelativeX)
 	For Iter=1 To M\Segments
 		Local Shandle=M\Segment[Iter-1]
 		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(Shandle)
-		Local X#=EntityX(S\Entity,True)
-		Local Z#=EntityZ(S\Entity,True)
+		Local X#=EntityX#(S\Entity,True)
+		Local Z#=EntityZ#(S\Entity,True)
 		
 		X#=X+RelativeX
 		S\TargetPos[0]=S\TargetPos[0]+RelativeX
@@ -153,8 +188,13 @@ Function WrapAroundSegments(M.MILLITOID,RelativeX)
 End Function
 
 Function SpawnMillitoid(X#,Z#,D=MAP_TOP_BOUND)
+	MILLITOID_REMAINING=MILLITOID_REMAINING+1
+	
 	Local M.MILLITOID=New MILLITOID
+	M\MillitoidNumber=MILLITOID_REMAINING
+	
 	M\Entity=CopyEntity(MILLITOID_HEAD_MASTER)
+	
 	M\Segments=MILLITOID_SEGMENTS_MAX+1
 	PositionEntity M\Entity,X#,MILLITOID_HEAD_Y_OFFSET,Z#,True
 	
@@ -190,9 +230,10 @@ Function SpawnMillitoid(X#,Z#,D=MAP_TOP_BOUND)
 		PrevEnt=S\Entity
 	Next
 	
-	SetMillitoidAnimation(M)
+	UpdateWorld
 	
-	MILLITOID_REMAINING=MILLITOID_REMAINING+1
+	SetMillitoidAnimation(M)
+	GhostMillitoid(M)
 End Function
 
 Function AddSegment.MILLITOIDSEGMENT(M.MILLITOID,PreviousSegmentEntity,Segment,X#,Z#,Yaw#)
@@ -247,12 +288,13 @@ Function MoveSegment(S.MILLITOIDSEGMENT)
 	;Ensure pointing towards target and move forwards
 	Local Yaw#=Angle2D(TX,TZ,X,Z)
 	RotateEntity S\Entity,0,Yaw#,0,True
-	MoveEntity S\Entity,0,0,0.1*tick
+	MoveEntity S\Entity,0,0,0.1*TICK
 End Function	
 
 Function Angle2D#( x1#,y1#,x2#,y2# )
 	Return 360.0- (ATan2(x1-x2,y1-y2))
 End Function
 ;~IDEal Editor Parameters:
-;~F#2#8#18#2A#31#37#4B#53#58#61#65#69#6D#71#8C#9A#C5#D2#FC
+;~F#5#C#1C#20#24#28#2C#42#49#4F#65#6D#72#7B#7F#83#87#8B#A6#AF
+;~F#BD#EE#FB#125
 ;~C#Blitz3D

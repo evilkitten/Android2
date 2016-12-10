@@ -2,6 +2,11 @@ Global GHOST_GEOMETRY
 Global GHOST_WIDTH#
 Const GHOST_MAP_PROPORTION#=0.25
 
+Type GHOST
+	Field EntityL
+	Field EntityR
+End Type
+
 Function BuildGhostMesh()
 	If (GHOST_GEOMETRY)
 		FreeEntity GHOST_GEOMETRY
@@ -111,5 +116,73 @@ Function CombineGhostGeometry()
 	FreeEntity GHOST_GEOMETRY
 	GHOST_GEOMETRY=0
 End Function
+
+Function GhostMillitoid(M.MILLITOID)
+	GhostEntity(M\Entity)
+	Local Segment
+	For Segment=1 To M\Segments
+		Local SegmentHandle=M\Segment[Segment-1]
+		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(SegmentHandle)
+		GhostEntity(S\Entity)
+	Next
+End Function
+
+Function GhostBouncer(B.BOUNCER)
+	GhostEntity(B\Entity)
+End Function
+
+Function GhostEntity(Entity)
+	Local G.GHOST=New GHOST
+	G\EntityL=CopyEntity(Entity)
+	G\EntityR=CopyEntity(Entity)
+	
+	Local X#=EntityX#(Entity,True)
+	Local Y#=EntityY#(Entity,True)
+	Local Z#=EntityZ#(Entity,True)
+	
+	Local Pitch#=EntityPitch#(Entity,True)
+	Local Yaw#=EntityYaw#(Entity,True)
+	Local Roll#=EntityRoll#(Entity,True)
+	
+	ScaleEntity G\EntityL,1.0,1.0,1.0;,True
+	ScaleEntity G\EntityR,1.0,1.0,1.0;,True
+	
+	EntityParent G\EntityL,Entity,False
+	EntityParent G\EntityR,Entity,False
+	
+	PositionEntity G\EntityL,Float(X#-MAPSIZEX),Y#,Z#,True
+	RotateEntity G\EntityL,Pitch#,Yaw#,Roll#,True
+	
+	PositionEntity G\EntityR,Float(X#+MAPSIZEX),Y#,Z#,True
+	RotateEntity G\EntityR,Pitch#,Yaw#,Roll#,True
+End Function
+
+Function AuditGhostPositions()
+	;This is required because the entity Parenting in Blitz3D is bugged
+	Local G.GHOST
+	For G=Each GHOST
+		Local Parent=GetParent(G\EntityL)
+		Local X#=EntityX(Parent,True)
+		Local Y#=EntityY(Parent,True)
+		Local Z#=EntityZ(Parent,True)
+		
+		Local LX#=EntityX(G\EntityL,True)
+		;Local LY#=EntityY(G\EntityL,True)
+		Local LZ#=EntityZ(G\EntityL,True)
+		
+		Local RX#=EntityX(G\EntityR,True)
+		;Local RY#=EntityY(G\EntityR,True)
+		Local RZ#=EntityZ(G\EntityR,True)
+		
+		If ( (Int(LX#) = Int(X#-MAPSIZEX)) And (Int(RX#) = Int(X#+MAPSIZEX)) And (Int(LZ#) = Int(Z#)) And (Int(RZ#) = Int(Z#)) )
+			; For some reason <> acts very strangely here. Maybe FP inaccuracy but DebugLog did not show difference
+			
+		Else
+			PositionEntity G\EntityL,X#-MAPSIZEX,Y#,Z#,True
+			PositionEntity G\EntityR,X#+MAPSIZEX,Y#,Z#,True
+		End If
+	Next
+End Function
 ;~IDEal Editor Parameters:
+;~F#4#9#12#32#71#77#81#85#9F
 ;~C#Blitz3D

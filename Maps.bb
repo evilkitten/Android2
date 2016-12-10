@@ -8,8 +8,8 @@ Const MAP_RIGHT_BOUND%			=	8		;	X+1
 Dim HAS_WALL%(0,0)
 Dim WALL_FLAG%(0,0)
 
-Global CAPSULEX
-Global CAPSULEY
+;Global CAPSULEX;Shared with Editor
+;Global CAPSULEY;Shared with Editor
 
 Function GameLoadMapData(Name$)
 	Local Path$=MapsDir()+Name+MAP_EXTENSION
@@ -98,7 +98,6 @@ End Function
 
 Function ProcessMapData()
 	;PopulateWorldFrom Map Data
-	
 	Local X
 	Local Y
 	Local Value
@@ -128,32 +127,36 @@ Function ProcessMapData()
 					HAS_WALL(X,Y)=WallFlag;
 					
 				Else	
-					Populate(X,Y,Value)	
+					Populate(X+1,Y+1,Value)	; Adjust for byte offset by +1,+1 : Best doing the offset here than in the populate function.
 				End If
 			End If
 		Next
 	Next
-	
-	BuildGround
-	
+	FinalisePopulation
 End Function
 
-Function Populate(X,Y,Value)
+Function Populate(X,Z,Value)
 	Select Value
 			
+		Case MAP_BOUNCER
+			SpawnBouncer(X,Z)
+			
 		Case MAP_MILLITOID:
-			SpawnMillitoid(X,Y,2^(Rand(0,3)))
+			SpawnMillitoid(X,Z,2^(Rand(0,3)))
 			
 		Case MAP_CAPSULE:
 			CAPSULEX=X
-			CAPSULEY=Y
+			CAPSULEY=Z
 		Default:
 			;Value=MAP_GROUND
 			;Do nothing.
 	End Select
 End Function
 
-	
+Function FinalisePopulation()
+	FinaliseBouncerDirections 
+	InitialiseGround
+End Function
 ;~IDEal Editor Parameters:
-;~F#62
+;~F#D#62#89#9B
 ;~C#Blitz3D

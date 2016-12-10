@@ -43,7 +43,7 @@ Function PaintChildren(Parent,Texture,AltR,AltG,AltB)
 	Local Iter
 	Local Child
 	
-	If EntityClass(Parent)="Mesh"
+	If ((EntityClass(Parent)="Mesh") Or (EntityClass(Parent)="Plane"))
 		If (SPECTRUM_MODE)
 			EntityColor Parent,AltR,AltG,AltB
 		Else
@@ -68,4 +68,5 @@ Function PaintChildren(Parent,Texture,AltR,AltG,AltB)
 End Function
 
 ;~IDEal Editor Parameters:
+;~F#5#1D#28
 ;~C#Blitz3D

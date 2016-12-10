@@ -1,6 +1,12 @@
 Global WALL_TEXTURE
 Global WALL_MESH
 
+Const WALL_FILE$="Wall"
+
+Function WallMatFile$()
+	Return MatFile(WALL_FILE)
+End Function
+
 Function BuildWallGeometries()
 	BuildWallMesh
 	BuildGhostMesh
@@ -28,7 +34,7 @@ Function PaintWall()
 	End If
 		
 	If (Not(SPECTRUM_MODE))
-		WALL_TEXTURE=LoadTexture(VisualDir()+"Wall_Mat.png",1)
+		WALL_TEXTURE=LoadTexture(WallMatFile(),1)
 		ScaleTexture WALL_TEXTURE,1/MAPSIZEX,1.0
 		EntityTexture WALL_MESH,WALL_TEXTURE
 	Else
@@ -336,4 +342,5 @@ Function CalculateUVs(Surface)
 	Next
 End Function	
 ;~IDEal Editor Parameters:
+;~F#5#9#10#18#1D#2E#32#99#E8
 ;~C#Blitz3D
