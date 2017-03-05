@@ -104,5 +104,5 @@ Function JoypadInputFire()
 	Return Y
 End Function
 ;~IDEal Editor Parameters:
-;~F#31#35#49#4D#61#65
+;~F#27#31#35#49#4D#61#65
 ;~C#Blitz3D

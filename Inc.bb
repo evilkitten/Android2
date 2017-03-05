@@ -1,4 +1,5 @@
 Include"Init.bb"
+Include "Math.bb"
 Include"Ghost.bb"
 Include"Maps.bb"
 Include"Player.bb"

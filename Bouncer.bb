@@ -1,5 +1,5 @@
 Const DIRECTION_UNDEFINED=-2
-Const BOUNCER_Y_OFFSET#=0.0
+Const BOUNCER_Y_OFFSET#=0.5
 
 Const BOUNCER_FILE$="Bouncer"
 
@@ -23,12 +23,12 @@ Function BuildBouncerMaster()
 		BOUNCER_MASTER=0
 	End If
 	
-	BOUNCER_MASTER=CreateCone(3);LoadAnimMesh()
+	BOUNCER_MASTER=LoadAnimMesh(BouncerAnimFile())
 	
 	PaintBouncerMaster
 	SetBouncerPhysics
 	
-	;ScaleEntity BOUNCER_MASTER,0.75-(0.35*SPECTRUM_MODE),0.25+(0.15*SPECTRUM_MODE),0.5,True
+	ScaleEntity BOUNCER_MASTER,1.0,(0.5+(0.5*SPECTRUM_MODE)),1.0,True
 	
 	HideEntity BOUNCER_MASTER
 	PositionEntity BOUNCER_MASTER,0,-100,0
@@ -39,19 +39,18 @@ Function SetBouncerPhysics()
 End Function
 
 Function PaintBouncerMaster()
-	;Local Texture=LoadTexture(VisualDir()+"Bouncer_Mat.png")
-	;PaintChildren(BOUNCER_MASTER,Texture,255,0,0)
-	;FreeTexture Texture
+	Local Texture=LoadTexture(BouncerMatFile())
+	PaintChildren(BOUNCER_MASTER,Texture,255,0,0)
+	FreeTexture Texture
 	EntityShininess BOUNCER_MASTER,0.25+(SPECTRUM_MODE*0.75)
 End Function
 
 Function SpawnBouncer(X#,Z#)
 	Local B.BOUNCER=New BOUNCER
 	B\Entity=CopyEntity(BOUNCER_MASTER)
-	
-	PositionEntity B\Entity,X#-0.5,BOUNCER_Y_OFFSET#,Z#-.5,True
-	EntityPickMode B\Entity,2
-	
+	PositionEntity B\Entity,X#-0.5,BOUNCER_Y_OFFSET#,Z#-0.5,True
+	;EntityBox B\Entity,0.5,0,0.5,1,1,1
+	EntityPickMode B\Entity,3
 	GhostBouncer(B)
 End Function
 
@@ -61,8 +60,8 @@ Function FinaliseBouncerDirections()
 	Local B.BOUNCER
 	For B=Each BOUNCER
 		
-		Local X#=EntityX(B\Entity,True);Int(Floor(EntityX(B\Entity,True)))
-		Local Y#=EntityZ(B\Entity,True);Int(Floor(EntityZ(B\Entity,True)))
+		Local X#=EntityX#(B\Entity,True);Int(Floor(EntityX(B\Entity,True)))
+		Local Y#=EntityZ#(B\Entity,True);Int(Floor(EntityZ(B\Entity,True)))
 		
 		X=X-0.5
 		Y=Y-0.5
@@ -75,23 +74,24 @@ Function FinaliseBouncerDirections()
 End Function
 
 Function MoveBouncer(B.BOUNCER)
-	Local Picked=EntityPick(B\Entity,0.333)
+	Local Picked=EntityPick(B\Entity,0.2)
 	
 	If (Picked)
 		TurnEntity B\Entity,0,180,0,True
-	Else
-		MoveEntity B\Entity,0,0,0.1*TICK
+	End If
+	
+	MoveEntity B\Entity,0,0,0.1*TICK
 		
-		;Wraparound
-		If (EntityX(B\Entity,True)<0)
-			PositionEntity B\Entity,EntityX(B\Entity,True)+MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
-		Else
-			If (EntityX(B\Entity,True)>=MAPSIZEX)
-				PositionEntity B\Entity,EntityX(B\Entity,True)-MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
-			End If
+	;Wraparound
+	If (EntityX(B\Entity,True)<0)
+		PositionEntity B\Entity,EntityX(B\Entity,True)+MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
+	Else
+		If (EntityX(B\Entity,True)>=MAPSIZEX)
+			PositionEntity B\Entity,EntityX(B\Entity,True)-MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
 		End If
 	End If
 End Function
+
 ;~IDEal Editor Parameters:
-;~F#B#F#28
+;~F#7#B#F#13#24#28#2F#38#4B
 ;~C#Blitz3D

@@ -54,7 +54,7 @@ End Function
 
 Function SetPlayerAnimation(State=PLAYER_STATE_IDLE)
 	If (State<>PLAYER_STATE)
-		Animate PIVOT_PLAYER,State,0.1,State,1.0
+		Animate PIVOT_PLAYER,State,0.25,State,1.0
 		PLAYER_STATE=State
 	End If
 End Function

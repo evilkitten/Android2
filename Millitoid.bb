@@ -72,7 +72,8 @@ Function PaintMillitoidHead()
 End Function
 
 Function SetMillitoidHeadPhysics()
-	;EntityPickMode MILLITOID_HEAD_MASTER,2,True
+	;EntityPickMode MILLITOID_HEAD_MASTER,3,True
+	
 	MILLITOID_COLLISION_RADIUS=0.25
 	MILLITOID_HEAD_Y_OFFSET#=0.65-(0.4*SPECTRUM_MODE)
 End Function
@@ -291,10 +292,7 @@ Function MoveSegment(S.MILLITOIDSEGMENT)
 	MoveEntity S\Entity,0,0,0.1*TICK
 End Function	
 
-Function Angle2D#( x1#,y1#,x2#,y2# )
-	Return 360.0- (ATan2(x1-x2,y1-y2))
-End Function
 ;~IDEal Editor Parameters:
-;~F#5#C#1C#20#24#28#2C#42#49#4F#65#6D#72#7B#7F#83#87#8B#A6#AF
-;~F#BD#EE#FB#125
+;~F#5#C#1C#20#24#28#2C#42#49#50#66#6E#73#7C#80#84#88#8C#A7#B0
+;~F#BE#EF#FC
 ;~C#Blitz3D

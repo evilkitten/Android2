@@ -12,8 +12,6 @@ Const MAPSIZEY=64
 
 Const MAP_EXTENSION$=".a2m"
 
-Const MAP_MAZEOFDEATH$="Flatlands";"Maze Of Death"
-
 ;SHARED MILLITOID DETAILS
 Const MILLITOID_MAX=5
 Const MILLITOID_SEGMENTS_MAX=4		;Actual Segments - 1 (Does not include HEAD)
@@ -76,5 +74,5 @@ Function GetBlocked(MapType)
 	End Select
 End Function
 ;~IDEal Editor Parameters:
-;~F#19#1F#24#29#2F#35#3A#40#45
-;~C#Blitz3D
+;~F#17#1D#22#27#2D#33#38#3E#43
+;~C#Blitz+

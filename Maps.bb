@@ -8,6 +8,8 @@ Const MAP_RIGHT_BOUND%			=	8		;	X+1
 Dim HAS_WALL%(0,0)
 Dim WALL_FLAG%(0,0)
 
+Const MAP_MAZEOFDEATH$="Maze Of Death"
+
 ;Global CAPSULEX;Shared with Editor
 ;Global CAPSULEY;Shared with Editor
 
@@ -158,5 +160,5 @@ Function FinalisePopulation()
 	InitialiseGround
 End Function
 ;~IDEal Editor Parameters:
-;~F#D#62#89#9B
+;~F#F#64#8B#9D
 ;~C#Blitz3D

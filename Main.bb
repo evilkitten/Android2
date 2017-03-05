@@ -24,7 +24,7 @@ Function Runtime()
 End Function
 
 Function Loop()
-EXIT_RUNTIME=KeyHit(1)+KeyDown(1)
+	EXIT_RUNTIME=KeyHit(1)+KeyDown(1)
 End Function
 ;~IDEal Editor Parameters:
 ;~F#B#10#19

@@ -8,6 +8,7 @@ Function CreateGameCamera()
 		FreeEntity CAM_PIVOT
 		CAM_PIVOT=0
 	End If
+	
 	CAM_PIVOT=CreatePivot()
 	PositionEntity CAM_PIVOT,CAPSULEX,PLAYER_Y_OFFSET,CAPSULEY
 	
@@ -68,5 +69,5 @@ Function PaintChildren(Parent,Texture,AltR,AltG,AltB)
 End Function
 
 ;~IDEal Editor Parameters:
-;~F#5#1D#28
+;~F#5#1E#29
 ;~C#Blitz3D
