@@ -1,5 +1,6 @@
 Global GROUND_TEXTURE
 Global GROUND_PLANE
+Const GROUND_BASELINE_Y#=0.0
 
 Const GROUND_FILE$="Ground"
 
@@ -19,6 +20,7 @@ Function BuildGround()
 	End If
 	
 	GROUND_PLANE=CreatePlane(1)
+	PositionEntity GROUND_PLANE,0,GROUND_BASELINE_Y,0
 End Function
 
 Function PaintGround()
@@ -27,12 +29,12 @@ Function PaintGround()
 		GROUND_TEXTURE=0
 	End If
 	
-	GROUND_TEXTURE=LoadTexture(GroundMatFile(),1)
+	GROUND_TEXTURE=AcquireTextureMap(GroundMatFile())
 	ScaleTexture GROUND_TEXTURE,MAPSIZEX*0.1,MAPSIZEY*0.1
 	PaintChildren(GROUND_PLANE,GROUND_TEXTURE,0,255,0)
 	FreeTexture GROUND_TEXTURE
 	GROUND_TEXTURE=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#5#A#E#17
+;~F#6#B#F#19
 ;~C#Blitz3D

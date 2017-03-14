@@ -8,7 +8,7 @@ Const MAP_RIGHT_BOUND%			=	8		;	X+1
 Dim HAS_WALL%(0,0)
 Dim WALL_FLAG%(0,0)
 
-Const MAP_MAZEOFDEATH$="Maze Of Death"
+Const MAP_MAZEOFDEATH$="Maze Of Death";"Test";
 
 ;Global CAPSULEX;Shared with Editor
 ;Global CAPSULEY;Shared with Editor
@@ -140,8 +140,14 @@ End Function
 Function Populate(X,Z,Value)
 	Select Value
 			
-		Case MAP_BOUNCER
+		Case MAP_TREE:
+			SpawnTree(X,Z)	
+			
+		Case MAP_BOUNCER:
 			SpawnBouncer(X,Z)
+			
+		Case MAP_HOVERDROID:
+			SpawnHoverdroid(X,Z)
 			
 		Case MAP_MILLITOID:
 			SpawnMillitoid(X,Z,2^(Rand(0,3)))
@@ -160,5 +166,5 @@ Function FinalisePopulation()
 	InitialiseGround
 End Function
 ;~IDEal Editor Parameters:
-;~F#F#64#8B#9D
+;~F#F#15#1E#53#59#64#8B#A3
 ;~C#Blitz3D

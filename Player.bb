@@ -24,7 +24,7 @@ Function InitialisePlayer()
 	End If
 	
 	PIVOT_PLAYER=LoadAnimMesh(PlayerAnimFile())
-	PositionEntity PIVOT_PLAYER,CAPSULEX,PLAYER_Y_OFFSET,CAPSULEY,True
+	PositionEntity PIVOT_PLAYER,CAPSULEX,GROUND_BASELINE_Y#+PLAYER_Y_OFFSET,CAPSULEY,True
 	
 	FinalisePlayer
 End Function
@@ -43,7 +43,7 @@ Function SetPlayerPhysics()
 End Function
 
 Function PaintPlayer()
-	Local Texture=LoadTexture(PlayerMatFile())
+	Local Texture=AcquireTextureMap(PlayerMatFile())
 	PaintChildren(PIVOT_PLAYER,Texture,95,95,95)
 	FreeTexture Texture
 End Function
@@ -54,7 +54,7 @@ End Function
 
 Function SetPlayerAnimation(State=PLAYER_STATE_IDLE)
 	If (State<>PLAYER_STATE)
-		Animate PIVOT_PLAYER,State,0.25,State,1.0
+		Animate PIVOT_PLAYER,State,1.0,State,1.0
 		PLAYER_STATE=State
 	End If
 End Function

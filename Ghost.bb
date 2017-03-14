@@ -117,6 +117,18 @@ Function CombineGhostGeometry()
 	GHOST_GEOMETRY=0
 End Function
 
+Function GhostTree(T.TREE)
+	GhostEntity(T\Entity)
+End Function
+
+Function GhostBouncer(B.BOUNCER)
+	GhostEntity(B\Entity)
+End Function
+
+Function GhostHoverdroid(H.HOVERDROID)
+	GhostEntity(H\Entity)
+End Function
+
 Function GhostMillitoid(M.MILLITOID)
 	GhostEntity(M\Entity)
 	Local Segment
@@ -125,10 +137,6 @@ Function GhostMillitoid(M.MILLITOID)
 		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(SegmentHandle)
 		GhostEntity(S\Entity)
 	Next
-End Function
-
-Function GhostBouncer(B.BOUNCER)
-	GhostEntity(B\Entity)
 End Function
 
 Function GhostEntity(Entity)
@@ -184,5 +192,5 @@ Function AuditGhostPositions()
 	Next
 End Function
 ;~IDEal Editor Parameters:
-;~F#4#9#12#32#71#77#81#85#9F
+;~F#4#9#12#32#71#77#7B#7F#83#8D#A7
 ;~C#Blitz3D

@@ -9,11 +9,6 @@ Global EXIT_RUNTIME=False
 Initialise
 Runtime
 
-Function Initialise()
-	SPECTRUM_MODE=Instr(CommandLine(),"/zx")
-	RUNTIME_Example
-End Function
-
 Function Runtime()
 	Repeat
 		Loop
@@ -27,5 +22,5 @@ Function Loop()
 	EXIT_RUNTIME=KeyHit(1)+KeyDown(1)
 End Function
 ;~IDEal Editor Parameters:
-;~F#B#10#19
+;~F#B#14
 ;~C#Blitz3D

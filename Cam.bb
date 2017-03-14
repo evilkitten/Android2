@@ -68,6 +68,25 @@ Function PaintChildren(Parent,Texture,AltR,AltG,AltB)
 	End If
 End Function
 
+Function CreateQuad(Parent=False)
+	Local Mesh=CreateMesh(Parent)
+	Local Surface=CreateSurface(Mesh)
+	
+	AddVertex(Surface,-0.5,0.5,0,1,0)
+	VertexColor Surface,0,255,255,255
+	AddVertex(Surface,0.5,0.5,0,0,0)
+	VertexColor Surface,1,255,255,255
+	AddVertex(Surface,-0.5,-0.5,0,1,1)
+	VertexColor Surface,2,255,255,255
+	AddVertex(Surface,0.5,-0.5,0,0,1)
+	VertexColor Surface,3,255,255,255	
+	AddTriangle(Surface,0,1,2)
+	AddTriangle(Surface,3,2,1)
+	
+	UpdateNormals Mesh
+	
+	Return Mesh
+End Function
 ;~IDEal Editor Parameters:
-;~F#5#1E#29
+;~F#5#1E#29#46
 ;~C#Blitz3D

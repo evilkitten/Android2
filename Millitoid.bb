@@ -48,7 +48,7 @@ Function BuildMillitoidHeadMaster()
 		MILLITOID_HEAD_MASTER=0
 	End If
 	
-	If SPECTRUM_MODE 
+	If (SPECTRUM_MODE)
 		MILLITOID_HEAD_MASTER=CreateSphere(POLYGON_DENSITY)
 	Else
 		MILLITOID_HEAD_MASTER=LoadAnimMesh(MillitoidHeadAnimFile())
@@ -60,12 +60,11 @@ Function BuildMillitoidHeadMaster()
 	ScaleEntity MILLITOID_HEAD_MASTER,0.75-(0.35*SPECTRUM_MODE),0.25+(0.15*SPECTRUM_MODE),0.5,True
 	
 	HideEntity MILLITOID_HEAD_MASTER
-	PositionEntity MILLITOID_HEAD_MASTER,0,-100,0
-	
+	PositionEntity MILLITOID_HEAD_MASTER,0,-110,0
 End Function
 
 Function PaintMillitoidHead()
-	Local Texture=LoadTexture(MillitoidHeadMatFile())
+	Local Texture=AcquireTextureMap(MillitoidHeadMatFile())
 		PaintChildren(MILLITOID_HEAD_MASTER,Texture,255,0,0)
 		FreeTexture Texture
 		EntityShininess MILLITOID_HEAD_MASTER,0.25+(SPECTRUM_MODE*0.75)
@@ -97,11 +96,11 @@ Function BuildMillitoidSegmentMaster()
 	ScaleEntity MILLITOID_SEGMENT_MASTER,0.333,0.25+(0.25*SPECTRUM_MODE),0.6,True
 	
 	HideEntity MILLITOID_SEGMENT_MASTER
-	PositionEntity MILLITOID_SEGMENT_MASTER,0,-100,0
+	PositionEntity MILLITOID_SEGMENT_MASTER,0,-120,0
 End Function
 
 Function PaintMillitoidSegment()
-	Local Texture=LoadTexture(MillitoidSegmentMatFile())
+	Local Texture=AcquireTextureMap(MillitoidSegmentMatFile())
 	PaintChildren(MILLITOID_SEGMENT_MASTER,Texture,0,0,255)
 	FreeTexture Texture
 	
@@ -146,7 +145,7 @@ Function MoveMillitoid(M.MILLITOID)
 		Local WrapX=(X#+MAPSIZEX)Mod MAPSIZEX
 		Local RelativeX#=(WrapX-X)
 		
-		PositionEntity M\Entity,WrapX,MILLITOID_HEAD_Y_OFFSET,Z,True
+		PositionEntity M\Entity,WrapX,GROUND_BASELINE_Y#+MILLITOID_HEAD_Y_OFFSET,Z,True
 		WrapAroundSegments(M,RelativeX#)
 		Return
 	End If
@@ -184,7 +183,7 @@ Function WrapAroundSegments(M.MILLITOID,RelativeX)
 		
 		X#=X+RelativeX
 		S\TargetPos[0]=S\TargetPos[0]+RelativeX
-		PositionEntity S\Entity,X#,MILLITOID_SEGMENT_Y_OFFSET,Z#,True
+		PositionEntity S\Entity,X#,GROUND_BASELINE_Y#+MILLITOID_SEGMENT_Y_OFFSET,Z#,True
 	Next
 End Function
 
@@ -197,7 +196,7 @@ Function SpawnMillitoid(X#,Z#,D=MAP_TOP_BOUND)
 	M\Entity=CopyEntity(MILLITOID_HEAD_MASTER)
 	
 	M\Segments=MILLITOID_SEGMENTS_MAX+1
-	PositionEntity M\Entity,X#,MILLITOID_HEAD_Y_OFFSET,Z#,True
+	PositionEntity M\Entity,X#,GROUND_BASELINE_Y#+MILLITOID_HEAD_Y_OFFSET,Z#,True
 	
 	Local XX=0
 	Local ZZ=0
@@ -229,7 +228,10 @@ Function SpawnMillitoid(X#,Z#,D=MAP_TOP_BOUND)
 		S=AddSegment(M,PrevEnt,Iter+1,X#,Z#,Yaw#)
 		M\Segment[Iter]=Handle(S)
 		PrevEnt=S\Entity
+		AddShadow(S\Entity)
 	Next
+	
+	AddShadow M\Entity
 	
 	UpdateWorld
 	
@@ -244,7 +246,7 @@ Function AddSegment.MILLITOIDSEGMENT(M.MILLITOID,PreviousSegmentEntity,Segment,X
 	S\Entity=CopyEntity(MILLITOID_SEGMENT_MASTER)
 	S\TargetPos[0]=EntityX(PreviousSegmentEntity,True)
 	S\TargetPos[1]=EntityZ(PreviousSegmentEntity,True)
-	PositionEntity S\Entity,X#,MILLITOID_SEGMENT_Y_OFFSET,Z#,True
+	PositionEntity S\Entity,X#,GROUND_BASELINE_Y#+MILLITOID_SEGMENT_Y_OFFSET,Z#,True
 	RotateEntity S\Entity,0,Yaw#,0,True
 	
 	Return S
@@ -293,6 +295,6 @@ Function MoveSegment(S.MILLITOIDSEGMENT)
 End Function	
 
 ;~IDEal Editor Parameters:
-;~F#5#C#1C#20#24#28#2C#42#49#50#66#6E#73#7C#80#84#88#8C#A7#B0
-;~F#BE#EF#FC
+;~F#5#C#1C#20#24#28#2C#41#48#4F#65#6D#72#7B#7F#83#87#8B#A6#AF
+;~F#BD#F1#FE
 ;~C#Blitz3D

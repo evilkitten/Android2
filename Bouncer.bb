@@ -28,10 +28,10 @@ Function BuildBouncerMaster()
 	PaintBouncerMaster
 	SetBouncerPhysics
 	
-	ScaleEntity BOUNCER_MASTER,1.0,(0.5+(0.5*SPECTRUM_MODE)),1.0,True
+;	ScaleEntity BOUNCER_MASTER,1.0,(0.5+(0.5*SPECTRUM_MODE)),1.0,True
 	
 	HideEntity BOUNCER_MASTER
-	PositionEntity BOUNCER_MASTER,0,-100,0
+	PositionEntity BOUNCER_MASTER,0,-130,0
 End Function
 
 Function SetBouncerPhysics()
@@ -39,7 +39,7 @@ Function SetBouncerPhysics()
 End Function
 
 Function PaintBouncerMaster()
-	Local Texture=LoadTexture(BouncerMatFile())
+	Local Texture=AcquireTextureMap(BouncerMatFile())
 	PaintChildren(BOUNCER_MASTER,Texture,255,0,0)
 	FreeTexture Texture
 	EntityShininess BOUNCER_MASTER,0.25+(SPECTRUM_MODE*0.75)
@@ -48,9 +48,10 @@ End Function
 Function SpawnBouncer(X#,Z#)
 	Local B.BOUNCER=New BOUNCER
 	B\Entity=CopyEntity(BOUNCER_MASTER)
-	PositionEntity B\Entity,X#-0.5,BOUNCER_Y_OFFSET#,Z#-0.5,True
+	PositionEntity B\Entity,X#-0.5,GROUND_BASELINE_Y#+BOUNCER_Y_OFFSET#,Z#-0.5,True
 	;EntityBox B\Entity,0.5,0,0.5,1,1,1
 	EntityPickMode B\Entity,3
+	AddShadow(B\Entity)
 	GhostBouncer(B)
 End Function
 
@@ -93,5 +94,5 @@ Function MoveBouncer(B.BOUNCER)
 End Function
 
 ;~IDEal Editor Parameters:
-;~F#7#B#F#13#24#28#2F#38#4B
+;~F#7#B#F#13#24#28#2F#39#4C
 ;~C#Blitz3D

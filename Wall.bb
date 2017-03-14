@@ -34,7 +34,7 @@ Function PaintWall()
 	End If
 		
 	If (Not(SPECTRUM_MODE))
-		WALL_TEXTURE=LoadTexture(WallMatFile(),1)
+		WALL_TEXTURE=AcquireTextureMap(WallMatFile())
 		ScaleTexture WALL_TEXTURE,1/MAPSIZEX,1.0
 		EntityTexture WALL_MESH,WALL_TEXTURE
 	Else

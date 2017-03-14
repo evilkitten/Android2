@@ -1,3 +1,24 @@
+;SHARED FILESYSTEM
+
+Const VISUAL_DIR_NAME$="Visual"
+Global ROOT$
+
+Function InitialiseSharedFilesystem()
+	ROOT$=CurrentDir();SystemProperty( "AppDir" )
+End Function
+
+Function MapsDir$()
+	Return ROOT$+"Maps\"
+End Function
+
+Function VisualDir$()
+	Return ROOT+VISUAL_DIR_NAME$+"\"
+End Function
+
+;SHARED GENERAL MAP
+
+Global MAP_BANK
+
 Const MAP_GROUND=0
 Const MAP_WALL=1
 Const MAP_TREE=2
@@ -11,19 +32,18 @@ Const MAPSIZEX=60
 Const MAPSIZEY=64
 
 Const MAP_EXTENSION$=".a2m"
+Const DOCS_EXTENSION$=".pdf"
+Const IMG_EXTENSION$=".png"
 
 ;SHARED MILLITOID DETAILS
+
 Const MILLITOID_MAX=5
 Const MILLITOID_SEGMENTS_MAX=4		;Actual Segments - 1 (Does not include HEAD)
 
+;SHARED CAPSULE
+
 Global CAPSULEX
 Global CAPSULEY
-
-Global MAP_BANK
-
-Function MapsDir$()
-	Return ROOT$+"Maps\"
-End Function
 
 ;MEMORY HANDLERS
 
@@ -74,5 +94,5 @@ Function GetBlocked(MapType)
 	End Select
 End Function
 ;~IDEal Editor Parameters:
-;~F#17#1D#22#27#2D#33#38#3E#43
+;~F#5#9#D#31#36#3B#41#47#4C#52#57
 ;~C#Blitz+
