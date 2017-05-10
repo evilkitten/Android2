@@ -3,8 +3,9 @@
 Const VISUAL_DIR_NAME$="Visual"
 Global ROOT$
 
+;CHANGE ACCORDINGLY FOR DEBUG / RELEASE VERSIONING
 Function InitialiseSharedFilesystem()
-	ROOT$=CurrentDir();SystemProperty( "AppDir" )
+	ROOT$=CurrentDir();SystemProperty( "AppDir" );
 End Function
 
 Function MapsDir$()
@@ -27,6 +28,15 @@ Const MAP_BOUNCER=4
 Const MAP_HOVERDROID=5
 Const MAP_MILLITOID=6
 Const MAP_CAPSULE=7
+
+Const MAP_GROUND_NAME$="Empty"
+Const MAP_WALL_NAME$="Wall"
+Const MAP_TREE_NAME$="Tree"
+Const MAP_MINE_NAME$="Mine"
+Const MAP_BOUNCER_NAME$="Bouncer"				;With Permission from C. Panayi
+Const MAP_HOVERDROID_NAME$="Hoverdroid"		;With Permission from C. Panayi
+Const MAP_MILLITOID_NAME$="Millitoid"				;With Permission from C. Panayi
+Const MAP_CAPSULE_NAME$="Capsule"
 
 Const MAPSIZEX=60
 Const MAPSIZEY=64
@@ -94,5 +104,5 @@ Function GetBlocked(MapType)
 	End Select
 End Function
 ;~IDEal Editor Parameters:
-;~F#5#9#D#31#36#3B#41#47#4C#52#57
-;~C#Blitz+
+;~F#6#A#E#3B#40#45#4B#51#56#5C#61
+;~C#Blitz3D

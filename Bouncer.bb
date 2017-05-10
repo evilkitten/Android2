@@ -7,7 +7,19 @@ Global BOUNCER_MASTER
 
 Type BOUNCER
 	Field Entity
+	Field G.GHOST
 End Type
+
+Function InitialiseBouncerFiles()
+	UnPackAsset(PACK_BOUNCER_ANIM_START,PACK_BOUNCER_ANIM_LENGTH)
+	UnPackAsset(PACK_BOUNCER_MAT_START,PACK_BOUNCER_MAT_LENGTH)
+End Function
+
+Function UnInitialiseBouncerFiles()
+	If (TEST) Then Return
+	DeleteFile BouncerAnimFile()
+	DeleteFile BouncerMatFile()
+End Function
 
 Function BouncerAnimFile$()
 	Return AnimFile(BOUNCER_FILE)
@@ -19,9 +31,12 @@ End Function
 
 Function BuildBouncerMaster()
 	If (BOUNCER_MASTER)
-		FreeEntity BOUNCER_MASTER
-		BOUNCER_MASTER=0
+		;FreeEntity BOUNCER_MASTER
+		;BOUNCER_MASTER=0
+		Return
 	End If
+	
+	InitialiseBouncerFiles
 	
 	BOUNCER_MASTER=LoadAnimMesh(BouncerAnimFile())
 	
@@ -32,10 +47,13 @@ Function BuildBouncerMaster()
 	
 	HideEntity BOUNCER_MASTER
 	PositionEntity BOUNCER_MASTER,0,-130,0
+	
+	UnInitialiseBouncerFiles
+	
 End Function
 
 Function SetBouncerPhysics()
-	;
+	EntityPickMode BOUNCER_MASTER,3
 End Function
 
 Function PaintBouncerMaster()
@@ -48,9 +66,12 @@ End Function
 Function SpawnBouncer(X#,Z#)
 	Local B.BOUNCER=New BOUNCER
 	B\Entity=CopyEntity(BOUNCER_MASTER)
+	
+	NameEntity B\Entity,Str(Handle(B))
+	
 	PositionEntity B\Entity,X#-0.5,GROUND_BASELINE_Y#+BOUNCER_Y_OFFSET#,Z#-0.5,True
 	;EntityBox B\Entity,0.5,0,0.5,1,1,1
-	EntityPickMode B\Entity,3
+	
 	AddShadow(B\Entity)
 	GhostBouncer(B)
 End Function
@@ -93,6 +114,11 @@ Function MoveBouncer(B.BOUNCER)
 	End If
 End Function
 
+Function RemoveBouncer(B.BOUNCER)
+	RemoveGhost(B\G)
+	FreeEntity B\Entity
+	Delete B
+End Function
 ;~IDEal Editor Parameters:
-;~F#7#B#F#13#24#28#2F#39#4C
+;~F#C#11#17#1B#1F#36#3A#41#4E#61#74
 ;~C#Blitz3D

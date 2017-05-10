@@ -3,15 +3,30 @@ Global WALL_MESH
 
 Const WALL_FILE$="Wall"
 
+Function InitialiseWallFiles()
+	;UnPackAsset(PACK_WALL_ANIM_START,PACK_WALL_ANIM_LENGTH)
+	UnPackAsset(PACK_WALL_MAT_START,PACK_WALL_MAT_LENGTH)
+End Function
+
+Function UnInitialiseWallFiles()
+	If (TEST) Then Return	
+	
+	;DeleteFile WallAnimFile()
+	DeleteFile WallMatFile()
+End Function
+
 Function WallMatFile$()
 	Return MatFile(WALL_FILE)
 End Function
 
 Function BuildWallGeometries()
+	InitialiseWallFiles
+	
 	BuildWallMesh
 	BuildGhostMesh
 	CombineGhostGeometry
 	FinaliseWalls
+	UnInitialiseWallFiles
 End Function
 
 Function BuildWallMesh()
@@ -19,6 +34,7 @@ Function BuildWallMesh()
 		FreeEntity WALL_MESH
 		WALL_MESH=0
 	End If
+	
 	WALL_MESH=BuildWallGeometry()
 End Function
 
@@ -37,6 +53,7 @@ Function PaintWall()
 		WALL_TEXTURE=AcquireTextureMap(WallMatFile())
 		ScaleTexture WALL_TEXTURE,1/MAPSIZEX,1.0
 		EntityTexture WALL_MESH,WALL_TEXTURE
+		FreeTexture WALL_TEXTURE
 	Else
 		EntityColor WALL_MESH,255,255,255
 		EntityShininess WALL_MESH,1.0
@@ -46,6 +63,7 @@ End Function
 
 Function SetWallPhysics()
 	EntityPickMode WALL_MESH,2,True
+	ScaleMesh WALL_MESH,1,1+(SPECTRUM_MODE*1),1
 End Function
 
 Function BuildWallGeometry(Parent=0,AddRoof=True)
@@ -341,6 +359,11 @@ Function CalculateUVs(Surface)
 		Next
 	Next
 End Function	
+
+Function RemoveWalls()
+	FreeEntity WALL_MESH
+	WALL_MESH=0
+End Function
 ;~IDEal Editor Parameters:
-;~F#5#9#10#18#1D#2E#32#99#E8
+;~F#5#A#11#15#1F#28#2D#3F#44#AB#FA#16A
 ;~C#Blitz3D

@@ -3,11 +3,14 @@
 Const MILLITOID_HEAD_FILE$="Millitoid_Head"
 Const MILLITOID_SEGMENT_FILE$="Millitoid_Segment"
 
+Const MILLITOID_INJURY=2;Number of segments remved each hit
+
 Type MILLITOID
 	Field MillitoidNumber
 	Field Entity
 	Field Segment[MILLITOID_SEGMENTS_MAX];(Handle(MILLITOIDSEGMENT))
 	Field Segments
+	Field G.GHOST
 End Type
 
 Type MILLITOIDSEGMENT
@@ -15,6 +18,7 @@ Type MILLITOIDSEGMENT
 	Field TargetPos#[1]
 	Field Segment
 	Field Entity
+	Field G.GHOST
 End Type
 
 Global MILLITOID_HEAD_MASTER
@@ -25,6 +29,23 @@ Global MILLITOID_HEAD_Y_OFFSET#
 Global MILLITOID_SEGMENT_Y_OFFSET#
 
 Global MILLITOID_REMAINING
+
+Function UnInitialiseMillitoidFiles()
+	If (TEST) Then Return
+	
+	DeleteFile MillitoidHeadAnimFile()
+	DeleteFile MillitoidHeadMatFile()
+	DeleteFile MillitoidSegmentAnimFile()
+	DeleteFile MillitoidSegmentMatFile()
+End Function
+
+Function InitialiseMillitoidFiles()
+	UnPackAsset(PACK_MILLITOID_HEAD_ANIM_START,PACK_MILLITOID_HEAD_ANIM_LENGTH)
+	UnPackAsset(PACK_MILLITOID_HEAD_MAT_START,PACK_MILLITOID_HEAD_MAT_LENGTH)
+	
+	UnPackAsset(PACK_MILLITOID_SEGMENT_ANIM_START,PACK_MILLITOID_SEGMENT_ANIM_LENGTH)
+	UnPackAsset(PACK_MILLITOID_SEGMENT_MAT_START,PACK_MILLITOID_SEGMENT_MAT_LENGTH)
+End Function
 
 Function MillitoidHeadAnimFile$()
 	Return AnimFile(MILLITOID_HEAD_FILE)
@@ -42,16 +63,24 @@ Function MillitoidSegmentMatFile$()
 	Return MatFile(MILLITOID_SEGMENT_FILE)
 End Function
 
+Function BuildMillitoidMaster()
+	InitialiseMillitoidFiles
+	BuildMillitoidHeadMaster
+	BuildMillitoidSegmentMaster
+	UnInitialiseMillitoidFiles
+End Function
+
 Function BuildMillitoidHeadMaster()
 	If (MILLITOID_HEAD_MASTER)
-		FreeEntity MILLITOID_HEAD_MASTER
-		MILLITOID_HEAD_MASTER=0
+		;FreeEntity MILLITOID_HEAD_MASTER
+		;MILLITOID_HEAD_MASTER=0
+		Return
 	End If
 	
 	If (SPECTRUM_MODE)
 		MILLITOID_HEAD_MASTER=CreateSphere(POLYGON_DENSITY)
 	Else
-		MILLITOID_HEAD_MASTER=LoadAnimMesh(MillitoidHeadAnimFile())
+		MILLITOID_HEAD_MASTER=LoadMesh(MillitoidHeadAnimFile());LoadAnimMesh(MillitoidHeadAnimFile())
 	End If
 	
 	InitialiseMillitoidHeadAnimSequences
@@ -71,7 +100,7 @@ Function PaintMillitoidHead()
 End Function
 
 Function SetMillitoidHeadPhysics()
-	;EntityPickMode MILLITOID_HEAD_MASTER,3,True
+	EntityPickMode MILLITOID_HEAD_MASTER,3,True
 	
 	MILLITOID_COLLISION_RADIUS=0.25
 	MILLITOID_HEAD_Y_OFFSET#=0.65-(0.4*SPECTRUM_MODE)
@@ -79,14 +108,15 @@ End Function
 
 Function BuildMillitoidSegmentMaster()
 	If (MILLITOID_SEGMENT_MASTER)
-		FreeEntity MILLITOID_SEGMENT_MASTER
-		MILLITOID_SEGMENT_MASTER=0
+		;FreeEntity MILLITOID_SEGMENT_MASTER
+		;MILLITOID_SEGMENT_MASTER=0
+		Return
 	End If
 	
 	If SPECTRUM_MODE 
 		MILLITOID_SEGMENT_MASTER=CreateCube()
 	Else
-		MILLITOID_SEGMENT_MASTER=LoadAnimMesh(MillitoidSegmentAnimFile())
+		MILLITOID_SEGMENT_MASTER=LoadMesh(MillitoidSegmentAnimFile());LoadAnimMesh(MillitoidSegmentAnimFile())
 	End If
 	
 	InitialiseMillitoidSegmentAnimSequences
@@ -122,19 +152,19 @@ Function SetMillitoidAnimation(M.MILLITOID)
 End Function
 
 Function InitialiseMillitoidHeadAnimSequences()
-	LoadAnimSeq(MILLITOID_HEAD_MASTER,MillitoidHeadAnimFile$())
+	;LoadAnimSeq(MILLITOID_HEAD_MASTER,MillitoidHeadAnimFile$())
 End Function
 
 Function InitialiseMillitoidSegmentAnimSequences()
-	LoadAnimSeq(MILLITOID_SEGMENT_MASTER,MillitoidSegmentAnimFile())
+	;LoadAnimSeq(MILLITOID_SEGMENT_MASTER,MillitoidSegmentAnimFile())
 End Function
 
 Function SetMillitoidHeadAnimation(Entity)
-	If Not(SPECTRUM_MODE) Then Animate Entity,1,0.1,1.0,1.0
+	;If Not(SPECTRUM_MODE) Then Animate Entity,1,0.1,1.0,1.0
 End Function
 
 Function SetMillitoidSegmentAnimation(Entity)
-	If Not(SPECTRUM_MODE) Then Animate Entity,1,Rnd(0.05,0.1),1.0,1.0
+	;If Not(SPECTRUM_MODE) Then Animate Entity,1,Rnd(0.05,0.1),1.0,1.0
 End Function
 
 Function MoveMillitoid(M.MILLITOID)
@@ -194,6 +224,8 @@ Function SpawnMillitoid(X#,Z#,D=MAP_TOP_BOUND)
 	M\MillitoidNumber=MILLITOID_REMAINING
 	
 	M\Entity=CopyEntity(MILLITOID_HEAD_MASTER)
+	
+	NameEntity M\Entity,Str(Handle(M))
 	
 	M\Segments=MILLITOID_SEGMENTS_MAX+1
 	PositionEntity M\Entity,X#,GROUND_BASELINE_Y#+MILLITOID_HEAD_Y_OFFSET,Z#,True
@@ -294,7 +326,47 @@ Function MoveSegment(S.MILLITOIDSEGMENT)
 	MoveEntity S\Entity,0,0,0.1*TICK
 End Function	
 
+Function MillitoidSegmentRemoval(M.MILLITOID)
+	RemoveMillitoidSegment(Object.MILLITOIDSEGMENT(M\Segment[M\Segments-1]))
+	M\Segment[M\Segments-1]=0
+	M\Segments=M\Segments-1
+	
+	If (M\Segments=0) Then RemoveMillitoid(M)
+End Function
+
+Function InjureMIllitoid(M.MILLITOID,Injury=MILLITOID_INJURY)
+	Local Iter
+	For Iter=1 To Injury
+		If (M<>Null)
+			MillitoidSegmentRemoval(M)
+		Else
+			Exit
+		End If
+	Next
+End Function
+
+Function RemoveMillitoidSegment(S.MILLITOIDSEGMENT)
+	RemoveGhost(S\G)
+	FreeEntity S\Entity
+	Delete S
+End Function
+
+Function RemoveMillitoid(M.MILLITOID)
+	RemoveGhost(M\G)
+	FreeEntity M\Entity
+	
+	;Just in case, let's iterate all possible segments for this millitoid
+	Local Iter
+	For Iter=1 To MILLITOID_SEGMENTS_MAX
+		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(M\Segment[Iter-1])
+		If (S<>Null)
+			RemoveMillitoidSegment(S)
+		End If
+	Next
+	
+	Delete M
+End Function
 ;~IDEal Editor Parameters:
-;~F#5#C#1C#20#24#28#2C#41#48#4F#65#6D#72#7B#7F#83#87#8B#A6#AF
-;~F#BD#F1#FE
+;~F#7#F#20#29#31#35#39#3D#41#48#5E#65#6C#83#8B#90#99#9D#A1#A5
+;~F#A9#C4#CD#111#161
 ;~C#Blitz3D

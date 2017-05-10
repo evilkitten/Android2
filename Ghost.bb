@@ -7,10 +7,39 @@ Type GHOST
 	Field EntityR
 End Type
 
+Function GhostEntity.GHOST(Entity)
+	Local G.GHOST=New GHOST
+	G\EntityL=CopyEntity(Entity)
+	G\EntityR=CopyEntity(Entity)
+	
+	Local X#=EntityX#(Entity,True)
+	Local Y#=EntityY#(Entity,True)
+	Local Z#=EntityZ#(Entity,True)
+	
+	Local Pitch#=EntityPitch#(Entity,True)
+	Local Yaw#=EntityYaw#(Entity,True)
+	Local Roll#=EntityRoll#(Entity,True)
+	
+	ScaleEntity G\EntityL,1.0,1.0,1.0;,True
+	ScaleEntity G\EntityR,1.0,1.0,1.0;,True
+	
+	EntityParent G\EntityL,Entity,False
+	EntityParent G\EntityR,Entity,False
+	
+	PositionEntity G\EntityL,Float(X#-MAPSIZEX),Y#,Z#,True
+	RotateEntity G\EntityL,Pitch#,Yaw#,Roll#,True
+	
+	PositionEntity G\EntityR,Float(X#+MAPSIZEX),Y#,Z#,True
+	RotateEntity G\EntityR,Pitch#,Yaw#,Roll#,True
+	
+	Return G
+End Function
+
 Function BuildGhostMesh()
 	If (GHOST_GEOMETRY)
-		FreeEntity GHOST_GEOMETRY
-		GHOST_GEOMETRY=0
+		;FreeEntity GHOST_GEOMETRY
+		;GHOST_GEOMETRY=0
+		Return
 	End If
 	GHOST_WIDTH=MAPSIZEX*GHOST_MAP_PROPORTION#
 	GHOST_GEOMETRY=BuildGhostGeometry()
@@ -118,51 +147,45 @@ Function CombineGhostGeometry()
 End Function
 
 Function GhostTree(T.TREE)
-	GhostEntity(T\Entity)
+	T\G=GhostEntity(T\Entity)
+End Function
+
+Function GhostMine(M.MINE)
+	Local Mesh=CreateQuad()
+	ScaleMesh Mesh,MINE_SIZE,MINE_SIZE,0.01
+	RotateMesh Mesh,90,0,0
+	AddMeshToSurface(Mesh,MINE_MASTER,(M\X-MAPSIZEX)-0.5,GROUND_BASELINE_Y+MINE_Y_OFFSET,M\Y-0.5)
+	AddMeshToSurface(Mesh,MINE_MASTER,(M\X+MAPSIZEX)-0.5,GROUND_BASELINE_Y+MINE_Y_OFFSET,M\Y-0.5)
+	FreeEntity Mesh
 End Function
 
 Function GhostBouncer(B.BOUNCER)
-	GhostEntity(B\Entity)
+	B\G=GhostEntity(B\Entity)
 End Function
 
 Function GhostHoverdroid(H.HOVERDROID)
-	GhostEntity(H\Entity)
+	H\G=GhostEntity(H\Entity)
 End Function
 
 Function GhostMillitoid(M.MILLITOID)
-	GhostEntity(M\Entity)
+	M\G=GhostEntity(M\Entity)
 	Local Segment
 	For Segment=1 To M\Segments
 		Local SegmentHandle=M\Segment[Segment-1]
 		Local S.MILLITOIDSEGMENT=Object.MILLITOIDSEGMENT(SegmentHandle)
-		GhostEntity(S\Entity)
+		S\G=GhostEntity(S\Entity)
 	Next
 End Function
 
-Function GhostEntity(Entity)
-	Local G.GHOST=New GHOST
-	G\EntityL=CopyEntity(Entity)
-	G\EntityR=CopyEntity(Entity)
+Function GhostBullet()
+	BULLET_GHOST=GhostEntity(CURRENT_BULLET)
+End Function
+
+Function RemoveGhost(G.GHOST)
+	If (G\EntityL) Then FreeEntity G\EntityL
+	If (G\EntityR) Then FreeEntity G\EntityR
 	
-	Local X#=EntityX#(Entity,True)
-	Local Y#=EntityY#(Entity,True)
-	Local Z#=EntityZ#(Entity,True)
-	
-	Local Pitch#=EntityPitch#(Entity,True)
-	Local Yaw#=EntityYaw#(Entity,True)
-	Local Roll#=EntityRoll#(Entity,True)
-	
-	ScaleEntity G\EntityL,1.0,1.0,1.0;,True
-	ScaleEntity G\EntityR,1.0,1.0,1.0;,True
-	
-	EntityParent G\EntityL,Entity,False
-	EntityParent G\EntityR,Entity,False
-	
-	PositionEntity G\EntityL,Float(X#-MAPSIZEX),Y#,Z#,True
-	RotateEntity G\EntityL,Pitch#,Yaw#,Roll#,True
-	
-	PositionEntity G\EntityR,Float(X#+MAPSIZEX),Y#,Z#,True
-	RotateEntity G\EntityR,Pitch#,Yaw#,Roll#,True
+	Delete G
 End Function
 
 Function AuditGhostPositions()
@@ -192,5 +215,5 @@ Function AuditGhostPositions()
 	Next
 End Function
 ;~IDEal Editor Parameters:
-;~F#4#9#12#32#71#77#7B#7F#83#8D#A7
+;~F#4#9#25#2F#4F#8E#94#98#A1#A5#A9#B3#BE
 ;~C#Blitz3D

@@ -1,24 +1,24 @@
-Global OFFSET=0
-Const PACKFILE$="Package.pak"
+Include"Offsets.bb" 
 
-;FOR EXTRACTION OF PACKAGED ASSETS
-;UNCOMMENT WHEN ASSETS COMPLETE AND PACKED - ALSO REMEMBER TO CHANGE "MatfIle()" and "AnimFile()" IN "Init.bb"
-Function UnPackAssets()
-;	Local File=ReadFile(VisualDir()+PACKFILE)
+Global OFFSET=0
+Const PACKFILE$="Assets.pak"
+
+Function UnPackAsset$(PackedOffset,PackedLength)
+	Local File=OpenFile(VisualDir()+PACKFILE)
+	Local Bank=CreateBank(PackedLength)
+	SeekFile(File,PackedOffset)
+	ReadBytes(Bank,File,0,PackedLength)
+	CloseFile File
 	
-;	While Not (Eof(File))
-;		Local Length=ReadInt(File)
-;		SeekFile(File,OFFSET+4)
-;		Local FN$=ReadPackedFileName$(File)
-;		SeekFile(File,OFFSET+32)
-;		Local Bank=CreateBank(Length)
-;		ReadBytes(Bank,File,0,Length)
-;		Local OutPut=WriteFile(TempDir()+FN)
-;		WriteBytes(Bank,OutPut,0,Length)
-;		CloseFile OutPut
-;		OFFSET=OFFSET+Length+32
-;		SeekFile(File,OFFSET)
-;	Wend
+	Local FileName$=ReadPackedFileName(Bank)
+	
+	File=WriteFile(TempDir()+FileName)
+	
+	WriteBytes Bank,File,32,PackedLength-32
+	
+	CloseFile File
+	
+	Return  TempDir()+FileName$
 End Function
 
 Function RemoveUnPackedAssets()
@@ -40,13 +40,14 @@ Function RemoveUnPackedAssets()
 	CloseDir DIR
 End Function
 
-Function ReadPackedFileName$(File)
+Function ReadPackedFileName$(Bank)
+	Local Off
 	Local Word$=""
-	While (Len(Word)<=27)
-		Word=Word+Chr(ReadByte(File))
-	Wend
+	For Off=4 To 31
+		Word=Word+Chr(PeekByte(Bank,Off))
+	Next
 	Return Trim(Word)
 End Function
-
 ;~IDEal Editor Parameters:
+;~F#5#17#2A
 ;~C#Blitz3D

@@ -1,11 +1,23 @@
 Type HOVERDROID
 	Field Entity
+	Field G.GHOST
 End Type
 
-Const HOVERDROID_Y_OFFSET#=0.5
+Const HOVERDROID_Y_OFFSET#=0.25
 Const HOVERDROID_FILE$="Hoverdroid"
 
 Global HOVERDROID_MASTER
+
+Function InitialiseHoverdroidFiles()
+	UnPackAsset(PACK_HOVERDROID_ANIM_START,PACK_HOVERDROID_ANIM_LENGTH)
+	UnPackAsset(PACK_HOVERDROID_MAT_START,PACK_HOVERDROID_MAT_LENGTH)
+End Function
+
+Function UnInitialiseHoverdroidFiles()
+	If (TEST) Then Return
+	DeleteFile HoverdroidAnimFile()
+	DeleteFile HoverdroidMatFile()
+End Function
 
 Function HoverdroidAnimFile$()
 	Return AnimFile(HOVERDROID_FILE)
@@ -17,23 +29,30 @@ End Function
 
 Function BuildHoverdroidMaster()
 	If (HOVERDROID_MASTER)
-		FreeEntity HOVERDROID_MASTER
-		HOVERDROID_MASTER=0
+		;FreeEntity HOVERDROID_MASTER
+		;HOVERDROID_MASTER=0
+		Return
 	End If
+	
+	InitialiseHoverdroidFiles
 	
 	HOVERDROID_MASTER=LoadAnimMesh(HoverdroidAnimFile())
 	
 	PaintHoverdroidMaster
 	SetHoverdroidPhysics
 	
+	UnInitialiseHoverdroidFiles
+	
+	
 ;	ScaleEntity HOVERDROID_MASTER,1.0,(0.5+(0.5*SPECTRUM_MODE)),1.0,True
 	
 	HideEntity HOVERDROID_MASTER
 	PositionEntity HOVERDROID_MASTER,0,-140,0
+	
 End Function
 
 Function SetHoverdroidPhysics()
-	;
+	EntityPickMode HOVERDROID_MASTER,1
 End Function
 
 Function PaintHoverdroidMaster()
@@ -46,10 +65,13 @@ End Function
 Function SpawnHoverdroid(X#,Z#)
 	Local H.HOVERDROID=New HOVERDROID
 	H\Entity=CopyEntity(HOVERDROID_MASTER)
+	
+	NameEntity H\Entity,Str(Handle(H))
+	
 ;	EntityBox H\Entity,0.5,0,0.5,0.6,1.0,0.6
 	PositionEntity H\Entity,X#-0.5,GROUND_BASELINE_Y#+HOVERDROID_Y_OFFSET#,Z#-0.5,True
 	RotateEntity H\Entity,0,Rand(1,4)*90,0,True
-	EntityPickMode H\Entity,3
+	
 	AddShadow(H\Entity)
 	GhostHoverdroid(H)
 End Function
@@ -76,6 +98,12 @@ Function MoveHoverdroid(H.HOVERDROID)
 	End If
 	
 End Function
+
+Function RemoveHoverdroid(H.HOVERDROID)
+	RemoveGhost(H\G)
+	FreeEntity H\Entity
+	Delete h
+End Function
 ;~IDEal Editor Parameters:
-;~F#0#9#D#11#22#26#2D#38
+;~F#A#F#15#19#1D#39
 ;~C#Blitz3D

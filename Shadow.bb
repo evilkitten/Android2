@@ -3,15 +3,30 @@ Const SHADOW_SIZE#=1.75
 
 Global SHADOW_MASTER
 
+Function InitialiseShadowFiles()
+	;UnPackAsset(PACK_SHADOW_ANIM_START,PACK_SHADOW_ANIM_LENGTH)
+	UnPackAsset(PACK_SHADOW_MAT_START,PACK_SHADOW_MAT_LENGTH)
+End Function
+
+Function UnInitialiseShadowFiles()
+	If (TEST) Then Return	
+	
+	;DeleteFile ShadowAnimFile()
+	DeleteFile ShadowMatFile()
+End Function
+
 Function ShadowMatFile$()
 	Return MatFile(SHADOW_FILE)
 End Function
 
 Function BuildShadowMaster()
 	If (SHADOW_MASTER)
-		FreeEntity SHADOW_MASTER
-		SHADOW_MASTER=0
+		;FreeEntity SHADOW_MASTER
+		;SHADOW_MASTER=0
+		Return
 	End If
+	
+	InitialiseShadowFiles
 	
 	SHADOW_MASTER=CreateQuad()
 	ScaleMesh SHADOW_MASTER,SHADOW_SIZE,SHADOW_SIZE,0.01
@@ -19,6 +34,8 @@ Function BuildShadowMaster()
 	EntityFX SHADOW_MASTER,9
 	
 	PaintShadowMaster
+	
+	UnInitialiseShadowFiles
 	
 	HideEntity SHADOW_MASTER
 	PositionEntity SHADOW_MASTER,0,-150,0
@@ -67,5 +84,5 @@ Function SpectrumShadow(ShadowTexture)
 	UnlockBuffer Buffer
 End Function
 ;~IDEal Editor Parameters:
-;~F#5#9#1A#25#31
+;~F#5#A#11#2B#36#42
 ;~C#Blitz3D

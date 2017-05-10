@@ -4,9 +4,22 @@ Const GROUND_BASELINE_Y#=0.0
 
 Const GROUND_FILE$="Ground"
 
+Function InitialiseGroundFiles()
+	;UnPackAsset(PACK_GROUND_ANIM_START,PACK_GROUND_ANIM_LENGTH)
+	UnPackAsset(PACK_GROUND_MAT_START,PACK_GROUND_MAT_LENGTH)
+End Function
+
+Function UnInitialiseGroundFiles()
+	If (TEST) Then Return
+	
+	DeleteFile GroundMatFile()
+End Function
+
 Function InitialiseGround()
+	InitialiseGroundFiles
 	BuildGround
 	PaintGround
+	UnInitialiseGroundFiles
 End Function
 
 Function GroundMatFile$()
@@ -15,8 +28,9 @@ End Function
 
 Function BuildGround()
 	If (GROUND_PLANE)
-		FreeEntity GROUND_PLANE
-		GROUND_PLANE=0
+		;FreeEntity GROUND_PLANE
+		;GROUND_PLANE=0
+		Return
 	End If
 	
 	GROUND_PLANE=CreatePlane(1)
@@ -24,9 +38,10 @@ Function BuildGround()
 End Function
 
 Function PaintGround()
-	If GROUND_TEXTURE
-		FreeTexture GROUND_TEXTURE
-		GROUND_TEXTURE=0
+	If (GROUND_TEXTURE)
+		;FreeTexture GROUND_TEXTURE
+		;GROUND_TEXTURE=0
+		Return
 	End If
 	
 	GROUND_TEXTURE=AcquireTextureMap(GroundMatFile())
@@ -36,5 +51,5 @@ Function PaintGround()
 	GROUND_TEXTURE=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#6#B#F#19
+;~F#6#B#11#18#1C#27
 ;~C#Blitz3D

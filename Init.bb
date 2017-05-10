@@ -9,23 +9,71 @@ Const ANIM_EXTENSION$="_Anim"
 Const MAT_EXTENSION$="_Mat"
 
 Function Initialise()
-	SPECTRUM_MODE=Instr(CommandLine(),"/zx")
+	InitialiseCommandLineParameters()
 	InitialiseAssets
+	InitialiseDefaultControls
 	RUNTIME_Example
 End Function
 
+Function InitialiseCommandLineParameters()
+	Local CLP$=Lower(CommandLine())
+	SPECTRUM_MODE=Instr(CLP,"/zx")
+	WIRE=Instr(CLP,"/wire")
+End Function
+
+Function InitialiseFadeMesh()
+	If (CAM_FADE_MESH)
+		FreeEntity CAM_FADE_MESH
+		CAM_FADE_MESH=0
+	End If
+	
+	CAM_FADE_MESH=SpawnFadeMesh()
+	
+	CAM_FADE=CAM_FADE_STATE_TRANSP
+	CAM_FADE_VALUE#=0.0
+	
+	EntityParent CAM_FADE_MESH,CAM,True
+	
+End Function
+
+Function SpawnFadeMesh()
+	Local Quad
+	Quad=CreateQuad(CAM_PIVOT)
+	RotateMesh Quad,90,0,0
+	
+	If (SPECTRUM_MODE)
+		ScaleMesh Quad,24,0.1,27.2
+		TranslateEntity Quad,0,GROUND_BASELINE_Y+3,-0.05,True
+	Else
+		ScaleMesh Quad,3,0.1,3
+		TranslateEntity Quad,0,CAM_LIMIT-1.5,1,True
+	End If
+	
+	EntityFX Quad,1
+	HideEntity Quad
+	
+	Return Quad
+End Function
+		
 Function AcquireTextureMap(Filepath$)
 	Return LoadTexture(Filepath,257)
 End Function
-		
+
+Function AcquireAnimTextureMap(FilePath$)
+	Return LoadAnimTexture(FilePath$,257,256,256,0,2)
+End Function
+
 Function MatFile$(Value$)
-	Return VisualDir()+"Assets\"+Value+MAT_EXTENSION+IMG_EXTENSION
-	;Return TempDir()+Value+MAT_EXTENSION+IMG_EXTENSION
+	;Exchange for packesd or direct use of resource - Remember to change back to packed for release
+	
+	If (TEST) Then Return VisualDir()+"Assets\"+Value+MAT_EXTENSION+IMG_EXTENSION
+	Return TempDir()+Value+MAT_EXTENSION+IMG_EXTENSION
 End Function
 
 Function AnimFile$(Value$)
-	Return VisualDir()+"Assets\"+Value+ANIM_EXTENSION+MESH_EXTENSION
-	;Return TempDir()+Value+ANIM_EXTENSION+MESH_EXTENSION
+	;Exchange for packesd or direct use of resource - Remember to change back to packed for release
+	If (TEST) Then Return VisualDir()+"Assets\"+Value+ANIM_EXTENSION+MESH_EXTENSION
+	Return TempDir()+Value+ANIM_EXTENSION+MESH_EXTENSION
 End Function
 
 Function InitialiseTempDir()
@@ -57,9 +105,23 @@ End Function
 Function InitialiseAssets()
 	InitialiseSharedFilesystem
 	InitialiseTempDir
-	UnPackAssets
+End Function
+
+Function InitialiseGameMasters()
+	;Initialises all except for PLAYER . Player is initialised AFTER map load. PLAYER is the Master.
+	BuildShadowMaster
+	
+	BuildTreeMaster
+	
+	BuildMineMaster
+	
+	BuildBouncerMaster
+	
+	BuildHoverdroidMaster
+	
+	BuildMillitoidMaster
 End Function
 
 ;~IDEal Editor Parameters:
-;~F#10#14#19#1E#34
+;~F#A#11#17#26#39#3D#41#48#4E#64#68#6D
 ;~C#Blitz3D
