@@ -90,7 +90,11 @@ Function GameLoadMapData(Name$)
 			
 			;Finalise
 			;[Block]
-			FreeBank MAP_BANK
+				;Keep MAP_BANK in memory for collision detection for player bullets on walls!
+				;FreeBank MAP_BANK
+			
+			
+			
 			;[End Block]
 			
 			Return True
@@ -172,5 +176,5 @@ Function FinalisePopulation()
 FinaliseMines	
 End Function
 ;~IDEal Editor Parameters:
-;~F#11#17#20#55#5B#8D
+;~F#17#20#55#5B#6A#91#AC
 ;~C#Blitz3D

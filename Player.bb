@@ -6,7 +6,7 @@ Const PLAYER_STATE_IDLE=0
 Const PLAYER_STATE_WALK=1
 
 Global PLAYER_STATE
-Global PLAYER_COLLISION_RADIUS#=0.1;0.375
+Global PLAYER_COLLISION_RADIUS#=0.01;0.375
 Global PLAYER_Y_OFFSET#
 
 Const PLAYER_FILE$="Android"
@@ -58,6 +58,7 @@ End Function
 Function SetPlayerPhysics()
 	ScaleEntity PIVOT_PLAYER,1,0.5,1,True
 	PLAYER_Y_OFFSET=0.0
+	EntityRadius PIVOT_PLAYER,0.25
 	;EntityRadius PIVOT_PLAYER,PLAYER_COLLISION_RADIUS+0.5;+(Float(Not(SPECTRUM_MODE)*0.15))
 	EntityPickMode PIVOT_PLAYER,3
 End Function
@@ -96,16 +97,16 @@ Function PlayerControlResponse()
 	Else
 		If (Control[CTRL_HORIZONTAL])
 			RotateEntity PIVOT_PLAYER,0,Int(90*Control[CTRL_HORIZONTAL]),0,True
-			If (LinePick(X#,Y#,Z#,Control[CTRL_HORIZONTAL]*0.1,0,0,PLAYER_COLLISION_RADIUS))=False
-				X#=(X#+Float(Control[CTRL_HORIZONTAL]*0.1*TICK))
+			If (LinePick(X#,Y#,Z#,Control[CTRL_HORIZONTAL]*GAME_MOVEMENT_SPEED,0,0,PLAYER_COLLISION_RADIUS))=False
+				X#=(X#+Float(Control[CTRL_HORIZONTAL]*GAME_MOVEMENT_SPEED*TICK))
 				X#=(X#+MAPSIZEX)Mod MAPSIZEX
 			End If
 		Else
 			If (Control[CTRL_VERTICAL])
 				RotateEntity PIVOT_PLAYER,0,90+Int((Control[CTRL_VERTICAL]*90.0)),0,True
-				If (LinePick(X#,Y#,Z#,0,0,Control[CTRL_VERTICAL]*0.1,PLAYER_COLLISION_RADIUS))=False
+				If (LinePick(X#,Y#,Z#,0,0,Control[CTRL_VERTICAL]*GAME_MOVEMENT_SPEED,PLAYER_COLLISION_RADIUS))=False
 					
-					Z#=(Z#+Float(Control[CTRL_VERTICAL]*0.1*TICK))
+					Z#=(Z#+Float(Control[CTRL_VERTICAL]*GAME_MOVEMENT_SPEED*TICK))
 					Z#=(Z#+MAPSIZEY)Mod MAPSIZEY
 				End If
 				
@@ -118,9 +119,14 @@ Function PlayerControlResponse()
 			SetPlayerAnimation(PLAYER_STATE_IDLE)
 		End If
 		
+		If (PeekArrayValue(Int(Floor(X)),Int(Floor(Z)))=MAP_MINE)
+			;Much more straightforward than the broken B3D collision system
+			MineExplosion()
+		End If
+		
 		PositionEntity PIVOT_PLAYER,X#,Y#,Z#,True
 	End If
 End Function
 ;~IDEal Editor Parameters:
-;~F#D#14#19#1D#33#40#46#4A#51
+;~F#D#14#19#1D#33#41#47#4B
 ;~C#Blitz3D

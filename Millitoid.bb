@@ -187,7 +187,7 @@ Function MoveMillitoid(M.MILLITOID)
 		Rotate=((-1*(Not(Rotate)))+(1*Rotate))
 		TurnEntity M\Entity,0,Rotate*90,0,True
 	Else
-		MoveEntity M\Entity,0,0,0.1*TICK
+		MoveEntity M\Entity,0,0,GAME_MOVEMENT_SPEED*TICK
 		SegmentsFollow(M)
 		Return
 	End If
@@ -323,7 +323,7 @@ Function MoveSegment(S.MILLITOIDSEGMENT)
 	;Ensure pointing towards target and move forwards
 	Local Yaw#=Angle2D(TX,TZ,X,Z)
 	RotateEntity S\Entity,0,Yaw#,0,True
-	MoveEntity S\Entity,0,0,0.1*TICK
+	MoveEntity S\Entity,0,0,GAME_MOVEMENT_SPEED*TICK
 End Function	
 
 Function MillitoidSegmentRemoval(M.MILLITOID)
@@ -365,8 +365,10 @@ Function RemoveMillitoid(M.MILLITOID)
 	Next
 	
 	Delete M
+	
+	MILLITOID_REMAINING=MILLITOID_REMAINING-1
 End Function
 ;~IDEal Editor Parameters:
 ;~F#7#F#20#29#31#35#39#3D#41#48#5E#65#6C#83#8B#90#99#9D#A1#A5
-;~F#A9#C4#CD#111#161
+;~F#A9#C4#CD#DB#111#11E#148#150#15B
 ;~C#Blitz3D

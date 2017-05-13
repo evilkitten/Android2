@@ -119,15 +119,22 @@ Function UpdateMines()
 	End If
 End Function
 
+Function MineExplosion()
+	RuntimeError("BOOM! : Mine_MineExplosion method called")
+End Function
+
 Function PaintMine()
 	EntityTexture MINE_MASTER,MINE_MAT,MINE_SWITCH
 	EntityFX MINE_MASTER,MINE_SWITCH
 End Function
 
 Function RemoveMines()
-	FreeEntity MINE_MASTER
-	MINE_MASTER=0
+	Local Surface=GetSurface(MINE_MASTER,1)
+	ClearSurface Surface,True,True
+	
+;	FreeEntity MINE_MASTER
+;	MINE_MASTER=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#0#12#19#22#39#45#4D#71#79
+;~F#0#12#19#22#26#39#41#45#4D#71#7D#82
 ;~C#Blitz3D

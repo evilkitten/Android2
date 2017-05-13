@@ -1,4 +1,7 @@
 Global GAME_PAUSE=False
+Const GAME_MOVEMENT_SPEED#=0.1
+
+Global GAME_DIFFICULTY
 
 Function GameUpdate()
 	If (Not(GAME_PAUSE))
@@ -35,7 +38,8 @@ End Function
 
 Function GameUpdateBullets()
 	MoveBullet()
+	UpdateLaser
 End Function
 ;~IDEal Editor Parameters:
-;~F#2#F#23
+;~F#5#12#26
 ;~C#Blitz3D

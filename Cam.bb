@@ -251,6 +251,10 @@ Function AddMeshToSurface(SourceMesh, DestinationMesh,X#=0.0,Y#=0.0,Z#=0.0)
 			
 	Next
 End Function
+
+Function CreateBullet()
+	Return CreatePivot()
+End Function
 ;~IDEal Editor Parameters:
-;~F#18#35#66#85#8E#94#B1#C5
+;~F#18#35#66#85#8E#B1#C5
 ;~C#Blitz3D

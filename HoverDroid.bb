@@ -52,6 +52,7 @@ Function BuildHoverdroidMaster()
 End Function
 
 Function SetHoverdroidPhysics()
+	;EntityRadius HOVERDROID_MASTER,0.25
 	EntityPickMode HOVERDROID_MASTER,1
 End Function
 
@@ -85,7 +86,7 @@ Function MoveHoverdroid(H.HOVERDROID)
 		
 	Else
 		
-		MoveEntity H\Entity,0,0,0.1*TICK
+		MoveEntity H\Entity,0,0,(GAME_MOVEMENT_SPEED*TICK)
 	End If
 	
 	;Wraparound
@@ -102,8 +103,8 @@ End Function
 Function RemoveHoverdroid(H.HOVERDROID)
 	RemoveGhost(H\G)
 	FreeEntity H\Entity
-	Delete h
+	Delete H
 End Function
 ;~IDEal Editor Parameters:
-;~F#A#F#15#19#1D#39
+;~F#0#A#F#15#19#1D#3A#41#4F#66
 ;~C#Blitz3D

@@ -53,6 +53,7 @@ Function BuildBouncerMaster()
 End Function
 
 Function SetBouncerPhysics()
+	;EntityRadius BOUNCER_MASTER,0.25
 	EntityPickMode BOUNCER_MASTER,3
 End Function
 
@@ -102,7 +103,7 @@ Function MoveBouncer(B.BOUNCER)
 		TurnEntity B\Entity,0,180,0,True
 	End If
 	
-	MoveEntity B\Entity,0,0,0.1*TICK
+	MoveEntity B\Entity,0,0,GAME_MOVEMENT_SPEED*TICK
 		
 	;Wraparound
 	If (EntityX(B\Entity,True)<0)
@@ -120,5 +121,5 @@ Function RemoveBouncer(B.BOUNCER)
 	Delete B
 End Function
 ;~IDEal Editor Parameters:
-;~F#C#11#17#1B#1F#36#3A#41#4E#61#74
+;~F#7#C#11#17#1B#1F#36#3B#42#4F#62#75
 ;~C#Blitz3D

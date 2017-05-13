@@ -55,8 +55,8 @@ Function SpawnFadeMesh()
 	Return Quad
 End Function
 		
-Function AcquireTextureMap(Filepath$)
-	Return LoadTexture(Filepath,257)
+Function AcquireTextureMap(Filepath$,WithFLag=0)
+	Return LoadTexture(Filepath,257+WithFLag)
 End Function
 
 Function AcquireAnimTextureMap(FilePath$)
@@ -120,8 +120,10 @@ Function InitialiseGameMasters()
 	BuildHoverdroidMaster
 	
 	BuildMillitoidMaster
+	
+	BuildLaserMaster
 End Function
 
 ;~IDEal Editor Parameters:
-;~F#A#11#17#26#39#3D#41#48#4E#64#68#6D
+;~F#A#11#17#26#39#3D#41#48#4E#64#68
 ;~C#Blitz3D
