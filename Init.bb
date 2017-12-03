@@ -125,5 +125,5 @@ Function InitialiseGameMasters()
 End Function
 
 ;~IDEal Editor Parameters:
-;~F#A#11#17#26#39#3D#41#48#4E#64#68
+;~F#A#11#17#26#39#3D#41#48#4E#64#68#6D
 ;~C#Blitz3D

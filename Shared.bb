@@ -29,7 +29,7 @@ Const MAP_HOVERDROID=5
 Const MAP_MILLITOID=6
 Const MAP_CAPSULE=7
 
-Const MAP_GROUND_NAME$="Empty"
+Const MAP_GROUND_NAME$="Ground"
 Const MAP_WALL_NAME$="Wall"
 Const MAP_TREE_NAME$="Tree"
 Const MAP_MINE_NAME$="Mine"

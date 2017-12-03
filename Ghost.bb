@@ -215,5 +215,5 @@ Function AuditGhostPositions()
 	Next
 End Function
 ;~IDEal Editor Parameters:
-;~F#4#9#25#2F#4F#8E#94#98#A1#A5#A9#B3#BE
+;~F#4#9#25#2F#4F#8E#94#98#A1#A5#A9#B3#B7#BE
 ;~C#Blitz3D

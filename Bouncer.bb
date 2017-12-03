@@ -1,8 +1,6 @@
 Const DIRECTION_UNDEFINED=-2
 Const BOUNCER_Y_OFFSET#=0.5
 
-Const BOUNCER_FILE$="Bouncer"
-
 Global BOUNCER_MASTER
 
 Type BOUNCER
@@ -22,11 +20,11 @@ Function UnInitialiseBouncerFiles()
 End Function
 
 Function BouncerAnimFile$()
-	Return AnimFile(BOUNCER_FILE)
+	Return AnimFile(MAP_BOUNCER_NAME)
 End Function
 
 Function BouncerMatFile$()
-	Return MatFile(BOUNCER_FILE)
+	Return MatFile(MAP_BOUNCER_NAME)
 End Function
 
 Function BuildBouncerMaster()
@@ -53,7 +51,6 @@ Function BuildBouncerMaster()
 End Function
 
 Function SetBouncerPhysics()
-	;EntityRadius BOUNCER_MASTER,0.25
 	EntityPickMode BOUNCER_MASTER,3
 End Function
 
@@ -71,7 +68,6 @@ Function SpawnBouncer(X#,Z#)
 	NameEntity B\Entity,Str(Handle(B))
 	
 	PositionEntity B\Entity,X#-0.5,GROUND_BASELINE_Y#+BOUNCER_Y_OFFSET#,Z#-0.5,True
-	;EntityBox B\Entity,0.5,0,0.5,1,1,1
 	
 	AddShadow(B\Entity)
 	GhostBouncer(B)
@@ -86,8 +82,8 @@ Function FinaliseBouncerDirections()
 		Local X#=EntityX#(B\Entity,True);Int(Floor(EntityX(B\Entity,True)))
 		Local Y#=EntityZ#(B\Entity,True);Int(Floor(EntityZ(B\Entity,True)))
 		
-		X=X-0.5
-		Y=Y-0.5
+		X#=X#-0.5
+		Y#=Y#-0.5
 		
 		Local BlockedVertical=(IsBlockedUp(X,Y) Or IsBlockedDown(X,Y))
 		Local BlockedHorizontal=(IsBlockedLeft(X,Y) Or IsBlockedRight(X,Y))
@@ -97,22 +93,29 @@ Function FinaliseBouncerDirections()
 End Function
 
 Function MoveBouncer(B.BOUNCER)
-	Local Picked=EntityPick(B\Entity,0.2)
+	Local Picked=EntityPick(B\Entity,0.3)
 	
 	If (Picked)
-		TurnEntity B\Entity,0,180,0,True
+		If (EntityDistance(B\Entity,Picked)<=1.25) Or (Picked=WALL_MESH)
+		
+			;Player Collision
+			If (Picked=PIVOT_PLAYER) Then PlayerCollision("Bouncer",B\Entity)
+			
+			TurnEntity B\Entity,0,180,0,True
+		End If
 	End If
 	
 	MoveEntity B\Entity,0,0,GAME_MOVEMENT_SPEED*TICK
 		
 	;Wraparound
-	If (EntityX(B\Entity,True)<0)
-		PositionEntity B\Entity,EntityX(B\Entity,True)+MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
+	If (EntityX#(B\Entity,True)<0)
+		PositionEntity B\Entity,EntityX#(B\Entity,True)+MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
 	Else
-		If (EntityX(B\Entity,True)>=MAPSIZEX)
-			PositionEntity B\Entity,EntityX(B\Entity,True)-MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
+		If (EntityX#(B\Entity,True)>=MAPSIZEX)
+			PositionEntity B\Entity,EntityX#(B\Entity,True)-MAPSIZEX,BOUNCER_Y_OFFSET,EntityZ(B\Entity,True),True
 		End If
 	End If
+	
 End Function
 
 Function RemoveBouncer(B.BOUNCER)
@@ -121,5 +124,5 @@ Function RemoveBouncer(B.BOUNCER)
 	Delete B
 End Function
 ;~IDEal Editor Parameters:
-;~F#7#C#11#17#1B#1F#36#3B#42#4F#62#75
+;~F#5#A#F#15#19#1D#34#38#3F#4B#5E#78
 ;~C#Blitz3D

@@ -3,8 +3,6 @@ Type TREE
 	Field G.GHOST
 End Type
 
-Const TREE_FILE$="Tree"
-
 Global TREE_MASTER
 
 Function InitialiseTreeFiles()
@@ -20,11 +18,11 @@ Function UnInitialiseTreeFiles()
 End Function
 
 ;Function TreeAnimFile$()
-;	Return AnimFile(TREE_FILE)
+;	Return AnimFile(MAP_TREE_NAME)
 ;End Function
 
 Function TreeMatFile$()
-	Return MatFile(TREE_FILE)
+	Return MatFile(MAP_TREE_NAME)
 End Function
 
 Function BuildTreeMaster()
@@ -75,14 +73,14 @@ Function SetTreePhysics()
 	EntityPickMode TREE_MASTER,3
 End Function
 
-Function SpawnTree(X#,Z#)
+Function SpawnTree(X,Z)
 	Local T.TREE=New TREE
 	T\Entity=CopyEntity(TREE_MASTER)
 	
 	NameEntity T\Entity,Str(Handle(T))
 	
 	EntityBox T\Entity,0,0,0,0.5,1.0,0.5
-	PositionEntity T\Entity,X#-0.5,GROUND_BASELINE_Y#,Z#-0.45,True
+	PositionEntity T\Entity,Int(X)-0.5,GROUND_BASELINE_Y#,Int(Z)-0.5,True
 	RotateEntity T\Entity,0,Rnd(360)*(Not(SPECTRUM_MODE)),0,True
 	
 	AddShadow(T\Entity)
@@ -95,5 +93,5 @@ Function RemoveTree(T.TREE)
 	Delete T
 End Function
 ;~IDEal Editor Parameters:
-;~F#9#E#19#1D#3A
+;~F#7#C#17#1B#38#47#4B#59
 ;~C#Blitz3D

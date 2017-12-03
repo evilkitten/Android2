@@ -1,8 +1,6 @@
 Global WALL_TEXTURE
 Global WALL_MESH
 
-Const WALL_FILE$="Wall"
-
 Function InitialiseWallFiles()
 	;UnPackAsset(PACK_WALL_ANIM_START,PACK_WALL_ANIM_LENGTH)
 	UnPackAsset(PACK_WALL_MAT_START,PACK_WALL_MAT_LENGTH)
@@ -16,7 +14,7 @@ Function UnInitialiseWallFiles()
 End Function
 
 Function WallMatFile$()
-	Return MatFile(WALL_FILE)
+	Return MatFile(MAP_WALL_NAME)
 End Function
 
 Function BuildWallGeometries()
@@ -365,5 +363,5 @@ Function RemoveWalls()
 	WALL_MESH=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#5#A#11#15#1F#28#2D#3F#44#AB#FA#16A
+;~F#3#8#F#13#1D#26#2B#3D#42#A9#F8#168
 ;~C#Blitz3D

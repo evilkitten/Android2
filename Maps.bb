@@ -176,5 +176,5 @@ Function FinalisePopulation()
 FinaliseMines	
 End Function
 ;~IDEal Editor Parameters:
-;~F#17#20#55#5B#6A#91#AC
+;~F#17#20#55#5B#6A#AC
 ;~C#Blitz3D

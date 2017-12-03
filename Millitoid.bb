@@ -1,7 +1,7 @@
 ;Const MILLITOID_SEGMENTS_MAX=4 - SHARED with MAP Editor
 
-Const MILLITOID_HEAD_FILE$="Millitoid_Head"
-Const MILLITOID_SEGMENT_FILE$="Millitoid_Segment"
+Const MILLITOID_HEAD_FILE$="_Head"
+Const MILLITOID_SEGMENT_FILE$="_Segment"
 
 Const MILLITOID_INJURY=2;Number of segments remved each hit
 
@@ -48,19 +48,19 @@ Function InitialiseMillitoidFiles()
 End Function
 
 Function MillitoidHeadAnimFile$()
-	Return AnimFile(MILLITOID_HEAD_FILE)
+	Return AnimFile(MAP_MILLITOID_NAME+MILLITOID_HEAD_FILE)
 End Function
 
 Function MillitoidSegmentAnimFile$()
-	Return AnimFile(MILLITOID_SEGMENT_FILE)
+	Return AnimFile(MAP_MILLITOID_NAME+MILLITOID_SEGMENT_FILE)
 End Function
 
 Function MillitoidHeadMatFile$()
-	Return MatFile(MILLITOID_HEAD_FILE)
+	Return MatFile(MAP_MILLITOID_NAME+MILLITOID_HEAD_FILE)
 End Function
 
 Function MillitoidSegmentMatFile$()
-	Return MatFile(MILLITOID_SEGMENT_FILE)
+	Return MatFile(MAP_MILLITOID_NAME+MILLITOID_SEGMENT_FILE)
 End Function
 
 Function BuildMillitoidMaster()
@@ -183,6 +183,11 @@ Function MoveMillitoid(M.MILLITOID)
 	Local Picked=EntityPick(M\Entity,1.0)
 	
 	If (Picked)
+		
+		;Player Collision
+		If (Picked=PIVOT_PLAYER) Then PlayerCollision("Millitoid",M\Entity)
+		
+		
 		Local Rotate=Rnd(0,1)
 		Rotate=((-1*(Not(Rotate)))+(1*Rotate))
 		TurnEntity M\Entity,0,Rotate*90,0,True
@@ -191,7 +196,6 @@ Function MoveMillitoid(M.MILLITOID)
 		SegmentsFollow(M)
 		Return
 	End If
-	
 End Function
 
 Function SegmentsFollow(M.MILLITOID)
@@ -370,5 +374,5 @@ Function RemoveMillitoid(M.MILLITOID)
 End Function
 ;~IDEal Editor Parameters:
 ;~F#7#F#20#29#31#35#39#3D#41#48#5E#65#6C#83#8B#90#99#9D#A1#A5
-;~F#A9#C4#CD#DB#111#11E#148#150#15B
+;~F#A9#C8#D1#DF#115#122#14C#154#15F#165
 ;~C#Blitz3D

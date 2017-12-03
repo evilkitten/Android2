@@ -1,7 +1,7 @@
 Global GAME_PAUSE=False
 Const GAME_MOVEMENT_SPEED#=0.1
 
-Global GAME_DIFFICULTY
+;Global GAME_DIFFICULTY - Not yet in use....
 
 Function GameUpdate()
 	If (Not(GAME_PAUSE))
@@ -41,5 +41,5 @@ Function GameUpdateBullets()
 	UpdateLaser
 End Function
 ;~IDEal Editor Parameters:
-;~F#5#12#26
+;~F#5#12
 ;~C#Blitz3D

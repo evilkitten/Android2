@@ -3,8 +3,7 @@ Type HOVERDROID
 	Field G.GHOST
 End Type
 
-Const HOVERDROID_Y_OFFSET#=0.25
-Const HOVERDROID_FILE$="Hoverdroid"
+Const HOVERDROID_Y_OFFSET#=0.5;0.25;
 
 Global HOVERDROID_MASTER
 
@@ -20,11 +19,11 @@ Function UnInitialiseHoverdroidFiles()
 End Function
 
 Function HoverdroidAnimFile$()
-	Return AnimFile(HOVERDROID_FILE)
+	Return AnimFile(MAP_HOVERDROID_NAME)
 End Function
 
 Function HoverdroidMatFile$()
-	Return MatFile(HOVERDROID_FILE)
+	Return MatFile(MAP_HOVERDROID_NAME)
 End Function
 
 Function BuildHoverdroidMaster()
@@ -43,7 +42,6 @@ Function BuildHoverdroidMaster()
 	
 	UnInitialiseHoverdroidFiles
 	
-	
 ;	ScaleEntity HOVERDROID_MASTER,1.0,(0.5+(0.5*SPECTRUM_MODE)),1.0,True
 	
 	HideEntity HOVERDROID_MASTER
@@ -52,8 +50,7 @@ Function BuildHoverdroidMaster()
 End Function
 
 Function SetHoverdroidPhysics()
-	;EntityRadius HOVERDROID_MASTER,0.25
-	EntityPickMode HOVERDROID_MASTER,1
+	EntityPickMode HOVERDROID_MASTER,1;3
 End Function
 
 Function PaintHoverdroidMaster()
@@ -63,14 +60,15 @@ Function PaintHoverdroidMaster()
 	EntityShininess HOVERDROID_MASTER,0.25+(SPECTRUM_MODE*0.75)
 End Function
 
-Function SpawnHoverdroid(X#,Z#)
+Function SpawnHoverdroid(X,Z)
 	Local H.HOVERDROID=New HOVERDROID
 	H\Entity=CopyEntity(HOVERDROID_MASTER)
 	
 	NameEntity H\Entity,Str(Handle(H))
 	
-;	EntityBox H\Entity,0.5,0,0.5,0.6,1.0,0.6
-	PositionEntity H\Entity,X#-0.5,GROUND_BASELINE_Y#+HOVERDROID_Y_OFFSET#,Z#-0.5,True
+	;EntityBox H\Entity,0,0.1,0,0.1,0.5,0.5
+	;EntityBox H\Entity,0.5,0,0.5,0.6,1.0,0.6
+	PositionEntity H\Entity,X-0.5,GROUND_BASELINE_Y#+(HOVERDROID_Y_OFFSET#*SPECTRUM_MODE),Z-0.5,True
 	RotateEntity H\Entity,0,Rand(1,4)*90,0,True
 	
 	AddShadow(H\Entity)
@@ -78,17 +76,23 @@ Function SpawnHoverdroid(X#,Z#)
 End Function
 
 Function MoveHoverdroid(H.HOVERDROID)
-	Local Picked=EntityPick(H\Entity,0.5)
+	Local Picked=EntityPick(H\Entity,0.25);0.5;0.3
 	
 	If (Picked)
-		Local Direction=Rand(1,3)
-		TurnEntity H\Entity,0,Floor(90.0*Direction),0,True
-		
-	Else
-		
-		MoveEntity H\Entity,0,0,(GAME_MOVEMENT_SPEED*TICK)
+		;Player Collision
+		If (Picked=PIVOT_PLAYER)
+			If (EntityDistance(Picked,H\Entity)<=1.2)
+				PlayerCollision("Hoverdroid",H\Entity)
+			End If
+		Else
+			
+			Local Direction=Rand(1,3)
+			TurnEntity H\Entity,0,Floor(90.0*Direction),0,True
+		End If	
 	End If
 	
+		MoveEntity H\Entity,0,0,(GAME_MOVEMENT_SPEED*TICK)
+		
 	;Wraparound
 	If (EntityX(H\Entity,True)<0)
 		PositionEntity H\Entity,EntityX(H\Entity,True)+MAPSIZEX,GROUND_BASELINE_Y#+HOVERDROID_Y_OFFSET,EntityZ(H\Entity,True),True
@@ -97,7 +101,6 @@ Function MoveHoverdroid(H.HOVERDROID)
 			PositionEntity H\Entity,EntityX(H\Entity,True)-MAPSIZEX,GROUND_BASELINE_Y#+HOVERDROID_Y_OFFSET,EntityZ(H\Entity,True),True
 		End If
 	End If
-	
 End Function
 
 Function RemoveHoverdroid(H.HOVERDROID)
@@ -106,5 +109,5 @@ Function RemoveHoverdroid(H.HOVERDROID)
 	Delete H
 End Function
 ;~IDEal Editor Parameters:
-;~F#0#A#F#15#19#1D#3A#41#4F#66
+;~F#0#9#E#14#18#1C#33#37#3E#4D#69
 ;~C#Blitz3D

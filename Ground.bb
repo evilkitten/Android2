@@ -2,8 +2,6 @@ Global GROUND_TEXTURE
 Global GROUND_PLANE
 Const GROUND_BASELINE_Y#=0.0
 
-Const GROUND_FILE$="Ground"
-
 Function InitialiseGroundFiles()
 	;UnPackAsset(PACK_GROUND_ANIM_START,PACK_GROUND_ANIM_LENGTH)
 	UnPackAsset(PACK_GROUND_MAT_START,PACK_GROUND_MAT_LENGTH)
@@ -23,7 +21,7 @@ Function InitialiseGround()
 End Function
 
 Function GroundMatFile$()
-	Return MatFile(GROUND_FILE)
+	Return MatFile(MAP_GROUND_NAME)
 End Function
 
 Function BuildGround()
@@ -51,5 +49,5 @@ Function PaintGround()
 	GROUND_TEXTURE=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#6#B#11#18#1C#27
+;~F#4#9#F#16#1A#25
 ;~C#Blitz3D

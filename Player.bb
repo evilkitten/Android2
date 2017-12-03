@@ -1,4 +1,4 @@
-Include "PLayerBullet.bb"
+Include "PlayerBullet.bb"
 
 Global PIVOT_PLAYER
 
@@ -9,7 +9,8 @@ Global PLAYER_STATE
 Global PLAYER_COLLISION_RADIUS#=0.01;0.375
 Global PLAYER_Y_OFFSET#
 
-Const PLAYER_FILE$="Android"
+Global LAST_KILLER_MINEX=9999
+Global LAST_KILLER_MINEY=9999
 
 Function UnInitialisePlayerFiles()
 	If (TEST) Then Return
@@ -24,11 +25,11 @@ Function InitialisePlayerFiles()
 End Function
 
 Function PlayerAnimFile$()
-	Return AnimFile(PLAYER_FILE)
+	Return AnimFile(APP_TITLE)
 End Function
 
 Function PlayerMatFile$()
-	Return MatFile(PLAYER_FILE)
+	Return MatFile(APP_TITLE)
 End Function
 
 Function InitialisePlayer()
@@ -59,7 +60,6 @@ Function SetPlayerPhysics()
 	ScaleEntity PIVOT_PLAYER,1,0.5,1,True
 	PLAYER_Y_OFFSET=0.0
 	EntityRadius PIVOT_PLAYER,0.25
-	;EntityRadius PIVOT_PLAYER,PLAYER_COLLISION_RADIUS+0.5;+(Float(Not(SPECTRUM_MODE)*0.15))
 	EntityPickMode PIVOT_PLAYER,3
 End Function
 
@@ -120,13 +120,22 @@ Function PlayerControlResponse()
 		End If
 		
 		If (PeekArrayValue(Int(Floor(X)),Int(Floor(Z)))=MAP_MINE)
-			;Much more straightforward than the broken B3D collision system
-			MineExplosion()
+				If(CheckLastKillerMine(Int(Floor(X)),Int(Floor(Z))))
+					;This mine killed us last time - we can ignore it for now...
+				Else
+				
+				;Much more straightforward than the broken B3D collision system
+				SetLastKillerMine(Int(Floor(X)),Int(Floor(Z)))
+				
+				MineExplosion()
+			End If
+		Else
+			ResetLastKillerMine
 		End If
 		
 		PositionEntity PIVOT_PLAYER,X#,Y#,Z#,True
 	End If
 End Function
 ;~IDEal Editor Parameters:
-;~F#D#14#19#1D#33#41#47#4B
+;~F#E#15#1A#1E#22#34#3A#41#47#4B#52
 ;~C#Blitz3D

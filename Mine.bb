@@ -3,7 +3,6 @@ Type MINE
 	Field Y
 End Type
 
-Const MINE_FILE$="Mine"
 Const MINE_SIZE#=1.0
 Const MINE_Y_OFFSET#=0.1
 Const MINE_COLOUR_RED=-65536
@@ -33,7 +32,7 @@ End Function
 ;End Function
 
 Function MineMatFile$()
-	Return MatFile(MINE_FILE)
+	Return MatFile(MAP_MINE_NAME)
 End Function
 
 Function BuildMineMaster()
@@ -119,8 +118,21 @@ Function UpdateMines()
 	End If
 End Function
 
+Function CheckLastKillerMine(X,Z)
+	Return (X=LAST_KILLER_MINEX) And (Z=LAST_KILLER_MINEY)
+End Function
+
+Function SetLastKillerMine(X,Z)
+	LAST_KILLER_MINEX=X
+	LAST_KILLER_MINEY=Z
+End Function
+
+Function ResetLastKillerMine()
+	SetLastKillerMine(9999,9999)
+End Function
+
 Function MineExplosion()
-	RuntimeError("BOOM! : Mine_MineExplosion method called")
+	Debuglog("BOOM! : Mine_MineExplosion method called")
 End Function
 
 Function PaintMine()
@@ -136,5 +148,5 @@ Function RemoveMines()
 ;	MINE_MASTER=0
 End Function
 ;~IDEal Editor Parameters:
-;~F#0#12#19#22#26#39#41#45#4D#71#7D#82
+;~F#0#11#18#25#38#40#44#4C#89#8E
 ;~C#Blitz3D

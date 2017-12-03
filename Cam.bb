@@ -70,6 +70,7 @@ Function DisplayOverlay()
 	Text 0,0,"Polygons "+Str(MAX_POLYGONS)
 	Text 0,20,"Frame "+Str(FRAME)
 	
+	
 	If (GAME_PAUSE)
 		Text 0,40,"PAUSE"
 	End If
@@ -99,7 +100,6 @@ Function FinaliseRender()
 	Flip (False);
 End Function
 	
-
 Function UpdateFade()
 	Local UpdateFadeAlpha=False
 	
@@ -256,5 +256,5 @@ Function CreateBullet()
 	Return CreatePivot()
 End Function
 ;~IDEal Editor Parameters:
-;~F#18#35#66#85#8E#B1#C5
+;~F#18#35#40#4E#56#66#85#8E#94#B1#C5#FE
 ;~C#Blitz3D
